@@ -116,22 +116,41 @@
                 <th> unser Sortiment</th>
             <% for(var i = 0; i < rows.length; i++) { %>
                 <tr>
-                   <!-- <td id="1"> <img href= <%= rows[i].smallink %> ></a> </td>-->
-                    <td> <%= rows[i].products %></td>
-                    <td > <%= rows[i].name %> </td>
-                    <td > <%= rows[i].price %> €</td>
-                    <td > <%= rows[i].description %></td>
-                    <td > <%= rows[i].quantity %></td>
+                    <td> <img href="<%= rows[i].smallLink %>"> </td>
+                    <td> <%= rows[i].products %> </td>
+                    <td> <%= rows[i].name %> </td>
+                    <td> <%= rows[i].price %> € </td>
+                    <td> <%= rows[i].description %> </td>
+                    <td> <%= rows[i].quantity %> </td>
+                    <td>
+						          <form method="POST" action="<%= "/onWarenkorb/" + rows[i].id %>">
+							          <button type="submit">in den Warenkorb</button>
+					          	</form>
+				          	</td>
                 </tr>
-            <%}%>
+            <% } %>
+            <tr>
+              <td>
+                <% if(start > 0) { %>
+                  <form method="POST" action="<%= "/shopBack" %>">
+                    <button type="submit">Zurück</button>
+                  </form>
+                <% } %>
+              </td>
+              <td>
+                <% if(end < rows.length) { %>
+                  <form method="POST" action="<%= "/shopNext" %>">
+                    <button type="submit">Weiter</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
             </table>
         
 
         </div>
         <footer>
-
         </footer>
-
     </body>
 </html>
 
