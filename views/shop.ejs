@@ -72,7 +72,7 @@
         <nav>
             <% if(!logedIn) { %>
                 <form action="onLogIn" method="POST">
-                    <input type="text" name="mail" value="<%= uMail %>"></br>
+                    <input type="text" name="mail" ></br> // es braucht keinen value hier, fehlermeldung
 	            <%= errors[0] %> </br>
                     <input type="text" name="password"></br>
 	            <%= errors[1] %> </br>
