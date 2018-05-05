@@ -61,20 +61,27 @@
                  <div id="form">
                      Registrierung
                      <form>
-                        Vorname <input type="text" name="firstNAme"> <br>
-                        Nachname <input type="text" name="surName"> <br>
-                        Passwort <input type="password" name="password"> <br>
-                        E-MAil <input type="email" name="mail">
-                        Straße / Nr <input type="text" name="street"> <input type="number" name="number"> <br>
-                        Postleitzahl <input type="postCode"> <br>
-                        Wohnort <input type="text" name="place">
-                        <button type="submit">Bestätigen</button>
+                        Vorname <input type="text" name="firstNAVorname: <input type="text"  name="firstName" value="<%= firstName %>"> </br>
+                        <%= errors[0] %> </br>
+                        Nachname: <input type="text" name="surName" value="<%= surName %>"> </br>
+                        <%= errors[1] %> </br>
+                        E-Mail-Adresse: <input type="text" name="mail" size="30" value="<%= mail %>"> </br>
+                        <%= errors[2] %> </br>
+                        Passwort: <input type="password" name="password"> </br>
+                        <%= errors[3] %> </br>
+                        Passwort wiederholen: <input type="password" name="passwordCont"> </br>
+                        <%= errors[4] %><%= errors[5] %> </br>
+                        Straße, Hausnummer: <input type="text" name="street" value="<%= street %>"> , <input type="text" name="number" size="4" value="<%= number %>"> </br>
+                        <%= errors[6] %> <%= errors[7] %> </br>
+                        Postleitzahl: <input type="text" name="postcode" value="<%= postcode %>"> </br>
+                        <%= errors[8] %> </br>
+                        Wohnort: <input type="text" name="place" value="<%= place %>"> </br>
+                        <%= errors[9] %> </br>
+                        <input type="submit" value="Registrieren" name="submit">me"> <br>
                      </form>
                  </div>
-
                  <footer>
                     <p> Impressum</p>
-                    </footer>
-            
-                </body>
-            </html>
+                 </footer>
+             </body>
+         </html>
