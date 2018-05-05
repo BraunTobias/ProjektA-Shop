@@ -1,0 +1,35 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <header>
+            <h3> Die Musikstube</h3>
+            
+        </header>
+
+        <nav>
+
+        </nav>
+
+        <div id ="Rahmen">
+            
+        
+        
+            <% for(var i = 0; i < rows.length; i++) { %>
+                <div> <%= rows[i].name %>  </div>
+                    <div id="1"> /* Bilder*/ </div>
+                    
+                     <div > <%= rows[i].price %> €</div>
+                    <div > <%= rows[i].info %></div>
+                    <div > <%= rows[i].quantity %></div>
+
+                    <form>
+                        <input type="number" name="">
+                        <button type="submit">bestellen</button>
+                    </form>
+                    
+        <%}%>
+       
+    
+        </div>
+    </body>
