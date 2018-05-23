@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Musikstube Einkaufsbestätigung</title>
+	</head>
+	<body>
+		<h2>Musikstube</h2>
+		<table>
+			<tr>
+				<td> <%= rows[i].id %> </td>//Auftrags-id
+				<td> <%= rows[i].user %> </td>//Benutzer-Mail
+			</tr>
+			<tr>
+				<td></td>
+				<td> Produkt </td>
+				<td> Anzahl </td>
+				<td> Preis </td>
+			</tr>
+			<% for(var i = start; i < end; i++) { %>
+				<tr>
+					
+					<td> <%= rows[i].name %> </td>//Produktname
+					<td> <%= rows[i].price %> </td>//Produktpreis
+					<td> <%= rows[i].counter %> </td>//Anzahl
+					<td> <%= parseFloat(rows[i].price) * parseFloat(rows[i].counter) %> </td>//Preis mal Anzahl
+				</tr>
+			<%}%>
+			<tr>
+				<td></td>
+				<td>Summe:</td>
+				<td><%= sum %></td>//Summe
+			</tr>
+		</table>
+	</body>
+</html>
