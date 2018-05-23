@@ -28,6 +28,9 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+//Css einbinden
+app.use(express.static(__dirname + '/public'));
+
 // Main
 app.get(['/'], function(req, res){
 	req.session['start'] = parseInt(0);
