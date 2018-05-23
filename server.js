@@ -6,6 +6,9 @@ let db = new sqlite3.Database('webshop.db');
 const express = require('express');
 const app = express()
 
+// Public-Ordner
+app.use(express.static( "public" ));
+
 // Body-Parser initialisieren
 const bodyParser= require('body-parser')
 app.use(bodyParser.urlencoded({extended: true}))
@@ -17,7 +20,7 @@ app.set('view engine', 'ejs');
 // Server starten
 const port = 3000;
 app.listen(port, function() {
-  console.log('listening on port' + port);
+	console.log('listening on port' + port);
 });
 
 // Express-Session initialisieren
@@ -27,9 +30,6 @@ app.use(session({
 	resave: false,
 	saveUninitialized: true
 }));
-
-//Css einbinden
-app.use(express.static(__dirname + '/public'));
 
 // Main
 app.get(['/'], function(req, res){
@@ -178,10 +178,10 @@ app.post(['/shopBack'], function(req, res){
 
 //Product
 app.post('/product/:id', function(req, res){
-	const id = req.params['id'];
+	req.session['id'] = req.params['id'];;
 	// Artikelinformationen übermitteln
 	if (req.session['authenticated']){
-		db.all(`SELECT * FROM products WHERE id =` + id, function(err, rows){
+		db.all(`SELECT * FROM products WHERE id =` + req.session['id'], function(err, rows){
 			res.render('product', {
 				message: 'Willkommen',
 				'firstName': req.session['firstName'],
@@ -196,7 +196,7 @@ app.post('/product/:id', function(req, res){
 		});
 	}
 	else {
-		db.all(`SELECT * FROM products WHERE id =` + id, function(err, rows){
+		db.all(`SELECT * FROM products WHERE id =` + req.session['id'], function(err, rows){
 			res.render('product', {
 				message: '',
 				'firstName': '',
@@ -208,6 +208,85 @@ app.post('/product/:id', function(req, res){
 				/// Product ///
 				'rows': rows || []
 			});
+		});
+	}
+});
+// Eine extra LogIn-Methode zum Anmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
+app.post('/productLogIn', function(req, res){
+	const mail = req.body["mail"];
+	const password = req.body["password"];
+	let errors = [];
+	
+	if(mail == null || mail == '' || password == null || password == ''){
+		if (mail == null || mail == ''){
+			console.log('Mail leer');
+			errors[0] = 'Bitte E-Mail-Adresse eingeben.';
+		}
+		if (password == null || password == ''){
+			console.log('PW leer');
+			errors[1] = 'Bitte Passwort eingeben.';
+		}
+		db.all(`SELECT * FROM products WHERE id =` + req.session['id'], function(err, rows){
+			res.render('product', {
+				message: '',
+				'firstName': '',
+				'surName': '',
+				'mail': mail,
+				'errors': errors,
+				'logedIn': false,
+				
+				/// Product ///
+				'rows': rows || []
+			});
+		});
+	}
+	else {
+		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
+			if (err){
+				console.log(err.message);
+			}
+			else{
+				const firstName = rows[0].firstName;
+				const surName = rows[0].surName;
+				const passwordCont = rows[0].password;
+				if (password === passwordCont){
+					req.session['authenticated'] = true;
+					req.session['firstName'] = firstName;
+					req.session['surName'] = surName;
+					req.session['mail'] = mail;
+					
+					db.all(`SELECT * FROM products WHERE id =` + req.session['id'], function(err, rows){
+						res.render('product', {
+							message: 'Willkommen',
+							'firstName': req.session['firstName'],
+							'surName': req.session['surName'],
+							'mail': '',
+							'errors': '',
+							'logedIn': true,
+							
+							/// Product ///
+							'rows': rows || []
+						});
+					});
+				}
+				else {
+					errors[1] = 'Falsches Passwort';
+					
+					db.all(`SELECT * FROM products WHERE id =` + req.session['id'], function(err, rows){
+						res.render('product', {
+							message: '',
+							'firstName': '',
+							'surName': '',
+							'mail': mail,
+							'errors': errors,
+							'logedIn': false,
+							
+							/// Product ///
+							'rows': rows || []
+						});
+					});
+				}
+			}
 		});
 	}
 });
@@ -238,6 +317,7 @@ app.post('/cart', (req, res) =>{
 		console.log('Warenkorb nur erreichbar wenn angemeldet')
 	}
 });
+// Methode nur zum Hinzufügen des Produkts zum Warenkorb; hat keine Ausgabe
 app.post('/cartInsert/:id, name, quantity, price', function(req, res){
 	// Variablen aus den req. uebernehmen
 	const id = req.params['id'];
