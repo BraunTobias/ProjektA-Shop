@@ -1,35 +1,52 @@
 <html>
     <head>
+        <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+        <title>Produkte</title>
     </head>
     <body>
         <header>
             <h3> Die Musikstube</h3>
             
         </header>
-
+         <h4> <%= message %> <%= firstName %> <%= surName %> </h4>
         <nav>
-
+            <% if(!logedIn) { %>
+                <form action="productLogIn" method="POST">
+                    <input type="text" value="<%= mail %>" name="mail" ></br> <!-- falls PW falsch war/damit man nicht noch mal die Mail eingeben muss -->
+	            <%= errors[0] %> </br>
+                    <input type="text" name="password"></br>
+	            <%= errors[1] %> </br>
+                    <input type="submit" value="Login" name="submit"> </p>
+                </form>
+                <a href="register">Registrieren</a>
+            <% } else { %>
+                <form action="onLogOut" method="POST">
+					<input type="submit" value="Logout" name="submit"> </p>
+                </form></p>
+                <a href="/cart">Warenkorb</a>
+            <% } %>
         </nav>
 
         <div id ="Rahmen">
             
+            <div id="1"><img src="<%= rows[0].PictL %>" alt=""></div>
+			<div>
+				<%= rows[0].name %></br>
+				<%= rows[0].price %> €</br>
+				<%= rows[0].quantity %> auf Lager
+			</div>
+			<% if(!logedIn) { %>
+				Vor dem Bestellen bitte anmelden oder registrieren.
+			<% } else { %>
+				<div> <%= rows[0].info %> </div>
+				<form action="cartInsert" method="POST">
+					<input type="text" value="1" name="count">
+					<input type="submit" value="In den Warenkorb" name="submit">
+				</form>
+			<% } %>
+            
         
         
-            <% for(var i = 0; i < rows.length; i++) { %>
-                <div> <%= rows[i].name %>  </div>
-                    <div id="1"> /* Bilder*/ </div>
-                    
-                     <div > <%= rows[i].price %> €</div>
-                    <div > <%= rows[i].info %></div>
-                    <div > <%= rows[i].quantity %></div>
-
-                    <form>
-                        <input type="number" name="">
-                        <button type="submit">bestellen</button>
-                    </form>
-                    
-        <%}%>
-       
     
         </div>
     </body>
