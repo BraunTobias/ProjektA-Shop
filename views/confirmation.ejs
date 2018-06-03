@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Musikstube Einkaufsbestätigung</title>
+	</head>
+	<body>
+		<h2>Musikstube</h2>
+		
+		<% if (rows.length > 0) { %>
+			<table>
+				
+				<% let last =  parseInt(rows.length) -1;
+				console.log("firstID: " + rows[0].orderId + " lastID: " + rows[last].orderId);
+				for (let j = 0; j <= rows[last].orderId; j ++) { 
+					if (j == rows[j].orderId) {
+					
+					
+				for (let j = 0; j < rows.length; j ++) {
+					if ( rows[j].orderId != parseInt(rows[j + 1].orderId) )
+				%>
+					<% console.log("j: " + j); %>
+					<tr>
+						<td>Auftragsnummer:</td>
+						<td> <%= rows[j].orderId %> </td><!--Auftrags-id-->
+					</tr>
+					<tr>
+						<td>Kundenmail:</td>
+						<td> <%= rows[j].mail %> </td><!--Benutzer-Mail-->
+					</tr>
+					<tr>
+						<td> Produkt </td>
+						<td> Stückpreis </td>
+						<td> Anzahl </td>
+						<td> Preis </td>
+					</tr>
+					<% for(let i = 0; i < rows.length; i++) { %>
+						<tr>
+							<td> <%= rows[i].name %> </td><!--Produktname-->
+							<td> <%= rows[i].price %> </td><!--Produktpreis-->
+							<td> <%= rows[i].quantity %> </td><!--Anzahl-->
+							<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
+						</tr>
+					<% } %>
+					<tr>
+						<td></td>
+						<td></td>
+						<td>Summe:</td>
+						<td><!-- Endpreis berechnen -->
+						<%	let sum = 0;
+							for(let i = 0; i < rows.length; i++) {
+								if (parseInt(rows[i].orderId) == j){
+									sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
+									/*Runden auf 2 Stellen nach dem Komma*/
+								}
+									}
+						%>
+						<%= sum %></td><!--Summe-->
+					</tr>
+				<% } } %>
+			</table>
+		<% } else { %>
+			Sie haben noch keine Bestellungen getätigt.
+		<% } %>
+	</body>
+</html>
