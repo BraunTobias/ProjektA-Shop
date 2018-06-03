@@ -34,7 +34,7 @@ app.use(session({
 // Main
 app.get(['/'], function(req, res){
 	req.session['start'] = parseInt(0);
-	req.session['end'] = parseInt(2);
+	req.session['end'] = parseInt(10);
 	if (req.session['authenticated']){
 		db.all(`SELECT * FROM products`, function(err, rows){
 			res.render('shop', {
@@ -74,12 +74,12 @@ app.get(['/'], function(req, res){
 app.post(['/shopNext'], function(req, res){
 	if (req.session['authenticated']){
 		db.all(`SELECT * FROM products`, function(err, rows){
-			if (parseInt(req.session['end']) <= parseInt(rows.length)){
-				req.session['end'] = parseInt(rows.length);
-				req.session['start'] = parseInt(req.session['start']) + 2;
+			if (parseInt(req.session['end']) < parseInt(rows.length) - 2){
+				req.session['end'] = parseInt(req.session['end']) + 9;
+				req.session['start'] = parseInt(req.session['start']) + 9;
 			} else {
-				req.session['end'] = parseInt(req.session['end']) + 2;
-				req.session['start'] = parseInt(req.session['start']) + 2;
+				req.session['end'] = parseInt(rows.length);
+				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
 			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
@@ -100,12 +100,12 @@ app.post(['/shopNext'], function(req, res){
 	}
 	else {
 		db.all('SELECT * FROM products', function(err, rows){
-			if (parseInt(req.session['end']) <= parseInt(rows.length)){
-				req.session['end'] = parseInt(rows.length);
-				req.session['start'] = parseInt(req.session['start']) + 2;
+			if (parseInt(req.session['end']) < parseInt(rows.length) - 2){
+				req.session['end'] = parseInt(req.session['end']) + 9;
+				req.session['start'] = parseInt(req.session['start']) + 9;
 			} else {
-				req.session['end'] = parseInt(req.session['end']) + 2;
-				req.session['start'] = parseInt(req.session['start']) + 2;
+				req.session['end'] = parseInt(rows.length);
+				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
 			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
@@ -127,12 +127,15 @@ app.post(['/shopNext'], function(req, res){
 app.post(['/shopBack'], function(req, res){
 	if (req.session['authenticated']){
 		db.all('SELECT * FROM products', function(err, rows){
-			if (parseInt(req.session['start'])-2 <= 0){
+			if (parseInt(req.session['start']) - 9 <= 0){
 				req.session['start'] = 0;
-				req.session['end'] = 2;
+				req.session['end'] = 10;
+			} else if (parseInt(req.session['end']) >= parseInt(rows.length) - 1) {
+				req.session['end'] = parseInt(req.session['start']) + 1;
+				req.session['start'] = parseInt(req.session['end']) - 10
 			} else {
-				req.session['start'] = parseInt(req.session['start']) - 2;
-				req.session['end'] = parseInt(req.session['end']) - 2;
+				req.session['end'] = parseInt(req.session['end']) - 9;
+				req.session['start'] = parseInt(req.session['start']) - 9;
 			}
 			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
@@ -153,13 +156,17 @@ app.post(['/shopBack'], function(req, res){
 	}
 	else {
 		db.all('SELECT * FROM products', function(err, rows){
-			if (parseInt(req.session['start'])-2 <= 0){
+			if (parseInt(req.session['start']) - 9 <= 0){
 				req.session['start'] = 0;
-				req.session['end'] = 2;
+				req.session['end'] = 10;
+			} else if (parseInt(req.session['end']) >= parseInt(rows.length) - 1) {
+				req.session['end'] = parseInt(req.session['start']) + 1;
+				req.session['start'] = parseInt(req.session['end']) - 10;
 			} else {
-				req.session['start'] = parseInt(req.session['start']) - 2;
-				req.session['end'] = parseInt(req.session['end']) - 2;
+				req.session['start'] = parseInt(req.session['start']) - 9;
+				req.session['end'] = parseInt(req.session['end']) - 9;
 			}
+			
 			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
@@ -375,8 +382,7 @@ app.post('/cartInsert/:name/:price', function(req, res){
 				// Prüfen ob der Artikel schon im Warenkorb ist
 				if (rowsCheck.length == 0) {
 					// Falls das ausgewählte Produkt noch nicht im Warenkorb ist, wird der Artikel dem Warenkorb hinzufügt
-					db.run(`INSERT INTO cart (mail, id, name, quantity, price) 
-					VALUES ('${req.session['mail']}', '${req.session['prodId']}', '${name}', '${quantity}', '${price}')`, function(err){
+					db.run(`INSERT INTO cart (mail, id, name, quantity, price) VALUES ('${req.session['mail']}', '${req.session['prodId']}', '${name}', '${quantity}', '${price}')`, function(err){
 						console.log(quantity + ' ' + name + '(s) inserted into cart')
 						// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
 						db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
@@ -466,55 +472,57 @@ app.post('/cartDelete/:id', function(req, res){
 });
 app.post('/buy', function(req, res){
 	//neue orderID herausfinden
-	//let orderId = 0;
 	req.session['orderId'] = parseInt(0);
 	db.all(`SELECT * FROM orders`, function(err, rowsID) {
-		for (let i = 0; i < rowsID.length; i ++){
-			req.session['orderId'] = parseInt(rowsID[i].orderID) + 1;
+		if (rowsID.length != 0) {
+			const lastID = parseInt(rowsID.length) -1;
+			//console.log('Last Index: ' + lastID);
+			//console.log('Old orderID: ' + rowsID[lastID].orderId]);
+			req.session['orderId'] = parseInt(rowsID[lastID].orderId) + 1;
+			console.log('New orderID: ' + req.session['orderId']);
 		}
 		// Warenkorb des Benutzers auswählen
 		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rowsCart) {
 			
-			// ausgewählter Warenkorb den orders hinzufügen
 			for (let j = 0; j < rowsCart.length; j ++){
-				db.run(`INSERT INTO orders (orderID, mail, id, name, price, quantity) 
-				VALUES ('${req.session['orderId']}', '${req.session['mail']}', '${rowsCart[j].id}', '${rowsCart[j].name}', '${rowsCart[j].price}', '${rowsCart[j].quantity}')`, function(err){
-					console.log('Product id ' + rowsCart[j].id + ' inserted into orders');
-				});				
+								
 				// Runterzählen des Lagerbestandes
 				const prodId = rowsCart[j].id;
 				const quantity = rowsCart[j].quantity;
+				console.log('Product id2: ' + prodId + ' Quantity: ' + quantity);
 				db.all(`SELECT * FROM products WHERE id = '${prodId}'`, function (err, rowsProd) {
-					let newStock = parseInt(rowsProd[j].stock) - parseInt(quantity);
+					const oldStock = parseInt(rowsProd[0].stock);
+					const newStock = parseInt(oldStock) - parseInt(quantity);
+					console.log('Product stock (old): ' + oldStock + ' / Product stock (new): ' + newStock);
 					db.run(`UPDATE products SET stock = '${newStock}' WHERE id = '${prodId}'`, function(err) {
-						console.log('updated stock in products id: ' + prodId);
+						console.log('updated stock in products id: ' + prodId + ' from ' + oldStock + ' to ' + newStock);
+					});
+				});
+				
+				// ausgewählter Warenkorb den Bestellungen hinzufügen
+				db.run(`INSERT INTO orders (orderID, mail, id, name, price, quantity) 
+				VALUES ('${req.session['orderId']}', '${req.session['mail']}', '${rowsCart[j].id}', '${rowsCart[j].name}', '${rowsCart[j].price}', '${rowsCart[j].quantity}')`, function(err){
+					console.log('Product id: ' + rowsCart[j].id + ' inserted into orders with orderID: ' + req.session['orderId']);
+					// Löschen des Benutzerwarenkorbes
+					db.run(`DELETE FROM cart WHERE mail = '${req.session['mail']}' AND id = '${prodId}'`, function(err){
+						console.log('Product id: ' + prodId + ' deleted from cart');
 					});
 				});
 			}
-			// Löschen des Benutzerwarenkorbes
-			db.run(`DELETE FROM cart WHERE mail = '${req.session['mail']}'`, function(err){
-				console.log('Cart deleted');
-				
-				// Ausgabe der Bestellbestätigung
-				db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}' AND orderID = '${req.session['orderId']}'`, (err, rows) => {
-					//Endpreis berechnen
-					let sum = 0;
-					for (var i = 0; i < rows.length; i ++) {
-						sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
-						//Runden auf 2 Stellen nach dem Komma
-					}
-					res.render('confirmation', {
-						message: '',
-						'firstName': req.session['firstName'],
-						'surName': req.session['surName'],
-						'mail': '',
-						'errors': '',
-						'logedIn': true,
-						
-						/// Bestellbestätigung ///
-						'rows': rows || [],
-						'sum': sum
-					});
+			// Ausgabe der Bestellbestätigung
+			
+			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
+				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
+				res.render('confirmation', {
+					message: '',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': '',
+					'logedIn': true,
+					
+					/// Bestellbestätigung ///
+					'rows': rows || [],
 				});
 			});
 		});
@@ -724,12 +732,7 @@ app.post('/onLogIn', function(req, res){
 
 app.get('/confirmation', function (req, res) {
 	db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
-		//Endpreis berechnen
-		let sum = 0;
-		for (var i = 0; i < rows.length; i ++) {
-			sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
-			//Runden auf 2 Stellen nach dem Komma
-		}
+		console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
 		res.render('confirmation', {
 			message: '',
 			'firstName': req.session['firstName'],
@@ -740,7 +743,6 @@ app.get('/confirmation', function (req, res) {
 			
 			/// Bestellbestätigung ///
 			'rows': rows || [],
-			'sum': sum
 		});
 	});
 });
@@ -751,20 +753,18 @@ app.post('/onLogOut', function (req, res) {
 	console.log('LogedOut.');
 	console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 	db.all('SELECT * FROM products', function(err, rows){
-		db.all('SELECT * FROM products', function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-				
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
+		res.render('shop', {
+			message: '',
+			'firstName': '',
+			'surName': '',
+			'mail': '',
+			'errors': '',
+			'logedIn': false,
+			
+			/// Shop ///
+			'start': req.session['start'],
+			'end': req.session['end'],
+			'rows': rows || []
 		});
 	});
 });
