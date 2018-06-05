@@ -6,7 +6,8 @@
         body{
             background-color: white;
 			background-image:url("hinter.jpg");
-			background-repeat:vertical-align;
+			background-repeat:repeat-y;
+			background-image-position:fixe;
 			background-size:100%;
 			 
         }
@@ -67,7 +68,7 @@
 			}
         nav{
             margin-top:70px;
-            padding-top:5px;
+            padding-top:8px;
 			padding-left:2px;
 			padding-right:2px;
 			text-align: center;
