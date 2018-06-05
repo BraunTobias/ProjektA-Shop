@@ -25,7 +25,7 @@ app.listen(port, function() {
 
 // Express-Session initialisieren
 const session = require('express-session');
-app.use(session({ 
+app.use(session({
 	secret: 'example',
 	resave: false,
 	saveUninitialized: true
@@ -36,33 +36,35 @@ app.get(['/'], function(req, res){
 	req.session['start'] = parseInt(0);
 	req.session['end'] = parseInt(10);
 	if (req.session['authenticated']){
+		console.log("Load: shop from " +  req.session['start'] + " - " + req.session['end']);
 		db.all(`SELECT * FROM products`, function(err, rows){
 			res.render('shop', {
 				message: '',
 				'firstName': req.session['firstName'],
 				'surName': req.session['surName'],
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': true,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
 				'rows': rows || []
-				
+
 			});
 		});
 	}
 	else {
 		db.all(`SELECT * FROM products`, function(err, rows){
+			console.log("Load: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
 				'firstName': '',
 				'surName': '',
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': false,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
@@ -81,20 +83,20 @@ app.post(['/shopNext'], function(req, res){
 				req.session['end'] = parseInt(rows.length);
 				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
-			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
+			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
 				'firstName': req.session['firstName'],
 				'surName': req.session['surName'],
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': true,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
 				'rows': rows || []
-				
+
 			});
 		});
 	}
@@ -107,15 +109,15 @@ app.post(['/shopNext'], function(req, res){
 				req.session['end'] = parseInt(rows.length);
 				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
-			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
+			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
 				'firstName': '',
 				'surName': '',
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': false,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
@@ -137,20 +139,20 @@ app.post(['/shopBack'], function(req, res){
 				req.session['end'] = parseInt(req.session['end']) - 9;
 				req.session['start'] = parseInt(req.session['start']) - 9;
 			}
-			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
+			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
 				'firstName': req.session['firstName'],
 				'surName': req.session['surName'],
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': true,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
 				'rows': rows || []
-				
+
 			});
 		});
 	}
@@ -166,16 +168,16 @@ app.post(['/shopBack'], function(req, res){
 				req.session['start'] = parseInt(req.session['start']) - 9;
 				req.session['end'] = parseInt(req.session['end']) - 9;
 			}
-			
-			console.log("reload: shop from " +  req.session['start'] + " - " + req.session['end']);
+
+			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			res.render('shop', {
 				message: '',
 				'firstName': '',
 				'surName': '',
 				'mail': '',
-				'errors': '', 
+				'errors': '',
 				'logedIn': false,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
@@ -183,350 +185,6 @@ app.post(['/shopBack'], function(req, res){
 			});
 		});
 	}
-});
-
-//Product
-app.post('/product/:id', function(req, res){
-	req.session['prodId'] = parseInt(req.params['id']);
-	console.log('Product index: ' + req.session['prodId']);
-	// Artikelinformationen übermitteln
-	if (req.session['authenticated']){
-		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-				
-				/// Product ///
-				'rows': rows || []
-			});
-		});
-	}
-	else {
-		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-				
-				/// Product ///
-				'rows': rows || []
-			});
-		});
-	}
-});
-/*app.get('/getProduct/:id', function(req, res){
-	req.session['prodId'] = parseInt(req.params['id']);
-	console.log('Product index: ' + req.session['prodId']);
-	// Artikelinformationen übermitteln
-	db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-		res.render('product', {
-			message: '',
-			'firstName': req.session['firstName'],
-			'surName': req.session['surName'],
-			'mail': '',
-			'errors': '',
-			'logedIn': true,
-			
-			/// Product ///
-			'rows': rows || []
-		});
-	});
-});*/
-app.post('/productLogIn', function(req, res){
-	// Eine extra LogIn-Methode zum Anmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
-	const mail = req.body["mail"];
-	const password = req.body["password"];
-	let errors = [];
-	if(mail == null || mail == '' || password == null || password == ''){
-		if (mail == null || mail == ''){
-			console.log('Mail empty');
-			errors[0] = 'Bitte E-Mail-Adresse eingeben.';
-		}
-		if (password == null || password == ''){
-			console.log('PW empty');
-			errors[1] = 'Bitte Passwort eingeben.';
-		}
-		console.log('Reload: product index: ' + req.session['prodId']);
-		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': mail,
-				'errors': errors,
-				'logedIn': false,
-				
-				/// Product ///
-				'rows': rows || []
-			});
-		});
-	}
-	else {
-		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rowsC) {
-			if (err){
-				console.log(err.message);
-			}
-			else{
-				const firstName = rowsC[0].firstName;
-				const surName = rowsC[0].surName;
-				const passwordCont = rowsC[0].password;
-				if (password === passwordCont){
-					req.session['authenticated'] = true;
-					req.session['firstName'] = firstName;
-					req.session['surName'] = surName;
-					req.session['mail'] = mail;
-					console.log('LogedIn.');
-					console.log('Reload: product index: ' + req.session['prodId']);
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-						res.render('product', {
-							message: 'Willkommen',
-							'firstName': req.session['firstName'],
-							'surName': req.session['surName'],
-							'mail': '',
-							'errors': '',
-							'logedIn': true,
-							
-							/// Product ///
-							'rows': rows || []
-						});
-					});
-				}
-				else {
-					errors[1] = 'Falsches Passwort';
-					console.log('Wrong PW');
-					console.log('Reload: product index: ' + req.session['prodId']);
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-						res.render('product', {
-							message: '',
-							'firstName': '',
-							'surName': '',
-							'mail': mail,
-							'errors': errors,
-							'logedIn': false,
-							
-							/// Product ///
-							'rows': rows || []
-						});
-					});
-				}
-			}
-		});
-	}
-});
-app.post('/productLogOut', function(req, res){
-	// Eine extra LogOut-Methode zum Abmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
-	console.log('LogedOut.');
-	console.log('Reload: product index: ' + req.session['prodId']);
-	//Sessionvariable löschen
-	delete req.session['authenticated'];
-	// Artikelinformationen übermitteln
-	db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-		res.render('product', {
-			message: '',
-			'firstName': '',
-			'surName': '',
-			'mail': '',
-			'errors': '',
-			'logedIn': false,
-			
-			/// Product ///
-			'rows': rows || []
-		});
-	});
-});
-
-// Cart
-app.get('/cart', (req, res) =>{
-	if (req.session['authenticated']){
-		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rows){
-			// Endpreis berechnen
-			let sum = 0;
-			for (var i = 0; i < rows.length; i ++) {
-				sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
-				//Runden auf 2 Stellen nach dem Komma
-			}
-			res.render('cart', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-				
-				/// Cart ///
-				'rows': rows || [],
-				'sum': sum
-			});
-		});
-	}
-});
-app.post('/cartInsert/:name/:price', function(req, res){
-	// Methode nur zum Hinzufügen des Produkts zum Warenkorb; hat nureine Texteinblendung als Rückmeldung
-	// Variablen aus dem req. uebernehmen
-	const id = req.session['prodId']
-	const name = req.params['name'];
-	let quantity = parseInt(req.body['quantity']);
-	const price = req.params['price'];
-	
-	db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err,rowsProd){
-		// Prüfen ob genügend Artikel im Lager sind
-		if (rowsProd[0].stock >= quantity) {
-			db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err, rowsCheck){
-				// Prüfen ob der Artikel schon im Warenkorb ist
-				if (rowsCheck.length == 0) {
-					// Falls das ausgewählte Produkt noch nicht im Warenkorb ist, wird der Artikel dem Warenkorb hinzufügt
-					db.run(`INSERT INTO cart (mail, id, name, quantity, price) VALUES ('${req.session['mail']}', '${req.session['prodId']}', '${name}', '${quantity}', '${price}')`, function(err){
-						console.log(quantity + ' ' + name + '(s) inserted into cart')
-						// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
-						db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-							res.render('product', {
-								message: 'Wurde ihrem Warenkorb hinzugefügt',
-								'firstName': '',
-								'surName': '',
-								'mail': '',
-								'errors': '',
-								'logedIn': true,
-								
-								/// Product ///
-								'rows': rows || []
-							});
-						});
-					});
-				}
-				else {
-				// Falls das ausgewählte Produkt schon im Warenkorb ist, wird die Anzahl hochgezählt
-				quantity += parseInt(rowsCheck[0].quantity);
-				db.run(`UPDATE cart SET quantity = '${quantity}' WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err){
-					console.log(quantity + ' ' + name + '(s) updated into cart')
-					// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-						res.render('product', {
-							message: 'Wurde ihrem Warenkorb hinzugefügt',
-							'firstName': '',
-							'surName': '',
-							'mail': '',
-							'errors': '',
-							'logedIn': true,
-							
-							/// Product ///
-							'rows': rows || []
-						});
-					});
-				});
-			}
-			});
-		}
-		else {
-			console.log('nicht genügend auf Lager');
-			let errors = [];
-			errors[2] = "Nicht genügend Artikel auf Lager";
-			db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-				res.render('product', {
-					message: '',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': errors,
-					'logedIn': true,
-					
-					/// Product ///
-					'rows': rows || []
-				});
-			});
-		}
-	});
-});
-app.post('/cartDelete/:id', function(req, res){
-	const id = req.params['id'];
-	// Loeschen des Artikels aus dem Warenkorb
-	db.all(`DELETE FROM cart WHERE mail = '${req.session['mail']}' AND id = '${id}'`, function(err){
-		console.log('product id ' + id + ' deleted from cart')
-		// Ausgabe des neuen Warenkorbes
-		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rows){
-			// Endpreis berechnen
-			let sum = 0;
-			for (var i = 0; i < rows.length; i ++) {
-				sum = parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity);
-			}
-			res.render('cart', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-				
-				/// Cart ///
-				'rows': rows || [],
-				'sum': sum
-			});
-		});
-	});
-});
-app.post('/buy', function(req, res){
-	//neue orderID herausfinden
-	req.session['orderId'] = parseInt(0);
-	db.all(`SELECT * FROM orders`, function(err, rowsID) {
-		if (rowsID.length != 0) {
-			const lastID = parseInt(rowsID.length) -1;
-			//console.log('Last Index: ' + lastID);
-			//console.log('Old orderID: ' + rowsID[lastID].orderId]);
-			req.session['orderId'] = parseInt(rowsID[lastID].orderId) + 1;
-			console.log('New orderID: ' + req.session['orderId']);
-		}
-		// Warenkorb des Benutzers auswählen
-		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rowsCart) {
-			
-			for (let j = 0; j < rowsCart.length; j ++){
-								
-				// Runterzählen des Lagerbestandes
-				const prodId = rowsCart[j].id;
-				const quantity = rowsCart[j].quantity;
-				console.log('Product id2: ' + prodId + ' Quantity: ' + quantity);
-				db.all(`SELECT * FROM products WHERE id = '${prodId}'`, function (err, rowsProd) {
-					const oldStock = parseInt(rowsProd[0].stock);
-					const newStock = parseInt(oldStock) - parseInt(quantity);
-					console.log('Product stock (old): ' + oldStock + ' / Product stock (new): ' + newStock);
-					db.run(`UPDATE products SET stock = '${newStock}' WHERE id = '${prodId}'`, function(err) {
-						console.log('updated stock in products id: ' + prodId + ' from ' + oldStock + ' to ' + newStock);
-					});
-				});
-				
-				// ausgewählter Warenkorb den Bestellungen hinzufügen
-				db.run(`INSERT INTO orders (orderID, mail, id, name, price, quantity) 
-				VALUES ('${req.session['orderId']}', '${req.session['mail']}', '${rowsCart[j].id}', '${rowsCart[j].name}', '${rowsCart[j].price}', '${rowsCart[j].quantity}')`, function(err){
-					console.log('Product id: ' + rowsCart[j].id + ' inserted into orders with orderID: ' + req.session['orderId']);
-					// Löschen des Benutzerwarenkorbes
-					db.run(`DELETE FROM cart WHERE mail = '${req.session['mail']}' AND id = '${prodId}'`, function(err){
-						console.log('Product id: ' + prodId + ' deleted from cart');
-					});
-				});
-			}
-			// Ausgabe der Bestellbestätigung
-			
-			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
-				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
-				res.render('confirmation', {
-					message: '',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': '',
-					'logedIn': true,
-					
-					/// Bestellbestätigung ///
-					'rows': rows || [],
-				});
-			});
-		});
-	});
 });
 
 // Register
@@ -552,9 +210,9 @@ app.post('/onRegister', function(req, res){
 	const number = req.body["number"];
 	const postcode = req.body["postcode"];
 	const place = req.body["place"];
-	
+
 	if(firstName == null || firstName == '' || surName == null || surName == '' || mail == null || mail == '' ||
-	password == null || password == '' || passwordCont == null || passwordCont == '' || password != passwordCont || 
+	password == null || password == '' || passwordCont == null || passwordCont == '' || password != passwordCont ||
 	street == null || street == '' || number == null || number == '' || postcode == null || postcode == '' || place == null || place == ''){
 		let errors = [];
 		if(firstName == null || firstName == ''){
@@ -605,17 +263,18 @@ app.post('/onRegister', function(req, res){
 			'street': street,
 			'number': number,
 			'postcode': postcode,
-			'place': place	
+			'place': place
 		});
-	} 
+	}
 	else {
 		const sql = `INSERT INTO customers (firstName, surName, mail, password, street, number, postcode, place) VALUES ('${firstName}', '${surName}', '${mail}', '${password}', '${street}', '${number}', '${postcode}', '${place}')`;
-		console.log(sql);
 		db.run(sql, function(err){
 			req.session['firstName'] = firstName;
 			req.session['surName'] = surName;
 			req.session['mail'] = mail;
 			req.session['authenticated'] = true;
+			console.log("Registered and logedIn");
+			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
 			db.all('SELECT * FROM products', function(err, rows){
 				res.render('shop', {
 					message: 'Willkommen',
@@ -624,7 +283,7 @@ app.post('/onRegister', function(req, res){
 					'mail': '',
 					'errors': '',
 					'logedIn': true,
-					
+
 					/// Shop ///
 					'start': req.session['start'],
 					'end': req.session['end'],
@@ -635,11 +294,12 @@ app.post('/onRegister', function(req, res){
 	}
 });
 
+// LogIn / LogOut
 app.post('/onLogIn', function(req, res){
 	const mail = req.body["mail"];
 	const password = req.body["password"];
 	let errors = [];
-	
+
 	if(mail == null || mail == '' || password == null || password == ''){
 		if (mail == null || mail == ''){
 			console.log('Mail empty');
@@ -658,7 +318,7 @@ app.post('/onLogIn', function(req, res){
 				'mail': mail,
 				'errors': errors,
 				'logedIn': false,
-				
+
 				/// Shop ///
 				'start': req.session['start'],
 				'end': req.session['end'],
@@ -668,8 +328,25 @@ app.post('/onLogIn', function(req, res){
 	}
 	else {
 		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
-			if (err){
-				console.log(err.message);
+			if (rows.length == 0){
+				errors[1] = 'Sie sind nicht registriert';
+				console.log('Not registered!');
+				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+				db.all('SELECT * FROM products', function(err, rows){
+					res.render('shop', {
+						message: '',
+						'firstName': '',
+						'surName': '',
+						'mail': mail,
+						'errors': errors,
+						'logedIn': false,
+
+						/// Shop ///
+						'start': req.session['start'],
+						'end': req.session['end'],
+						'rows': rows || []
+					});
+				});
 			}
 			else{
 				const firstName = rows[0].firstName;
@@ -683,13 +360,6 @@ app.post('/onLogIn', function(req, res){
 					console.log('LogedIn.');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						if (parseInt(req.session['start'])-2 <= 0){
-							req.session['start'] = 0;
-							req.session['end'] = 2;
-						} else {
-							req.session['start'] = parseInt(req.session['start']) - 2;
-							req.session['end'] = parseInt(req.session['end']) - 2;
-						}
 						res.render('shop', {
 							message: 'Willkommen',
 							'firstName': req.session['firstName'],
@@ -697,7 +367,7 @@ app.post('/onLogIn', function(req, res){
 							'mail': '',
 							'errors': errors,
 							'logedIn': true,
-							
+
 							/// Shop ///
 							'start': req.session['start'],
 							'end': req.session['end'],
@@ -717,7 +387,7 @@ app.post('/onLogIn', function(req, res){
 							'mail': mail,
 							'errors': errors,
 							'logedIn': false,
-							
+
 							/// Shop ///
 							'start': req.session['start'],
 							'end': req.session['end'],
@@ -729,24 +399,6 @@ app.post('/onLogIn', function(req, res){
 		});
 	}
 });
-
-app.get('/confirmation', function (req, res) {
-	db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
-		console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
-		res.render('confirmation', {
-			message: '',
-			'firstName': req.session['firstName'],
-			'surName': req.session['surName'],
-			'mail': '',
-			'errors': '',
-			'logedIn': true,
-			
-			/// Bestellbestätigung ///
-			'rows': rows || [],
-		});
-	});
-});
-
 app.post('/onLogOut', function (req, res) {
 	//Sessionvariable löschen
 	delete req.session['authenticated'];
@@ -760,11 +412,376 @@ app.post('/onLogOut', function (req, res) {
 			'mail': '',
 			'errors': '',
 			'logedIn': false,
-			
+
 			/// Shop ///
 			'start': req.session['start'],
 			'end': req.session['end'],
 			'rows': rows || []
 		});
 	});
+});
+
+// Product
+app.post('/product/:id', function(req, res){
+	req.session['prodId'] = parseInt(req.params['id']);
+	console.log('Product index: ' + req.session['prodId']);
+	// Artikelinformationen übermitteln
+	if (req.session['authenticated']){
+		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+			res.render('product', {
+				message: '',
+				'firstName': req.session['firstName'],
+				'surName': req.session['surName'],
+				'mail': '',
+				'errors': '',
+				'logedIn': true,
+
+				/// Product ///
+				'rows': rows || []
+			});
+		});
+	}
+	else {
+		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+			res.render('product', {
+				message: '',
+				'firstName': '',
+				'surName': '',
+				'mail': '',
+				'errors': '',
+				'logedIn': false,
+
+				/// Product ///
+				'rows': rows || []
+			});
+		});
+	}
+});
+app.post('/productLogIn', function(req, res){
+	// Eine extra LogIn-Methode zum Anmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
+	const mail = req.body["mail"];
+	const password = req.body["password"];
+	let errors = [];
+	if(mail == null || mail == '' || password == null || password == ''){
+		if (mail == null || mail == ''){
+			console.log('Mail empty');
+			errors[0] = 'Bitte E-Mail-Adresse eingeben.';
+		}
+		if (password == null || password == ''){
+			console.log('PW empty');
+			errors[1] = 'Bitte Passwort eingeben.';
+		}
+		console.log('Reload: product index: ' + req.session['prodId']);
+		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+			res.render('product', {
+				message: '',
+				'firstName': '',
+				'surName': '',
+				'mail': mail,
+				'errors': errors,
+				'logedIn': false,
+
+				/// Product ///
+				'rows': rows || []
+			});
+		});
+	}
+	else {
+		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
+			if (rows.length == 0){
+				errors[1] = 'Sie sind nicht registriert';
+				console.log('Not registered!');
+				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+				db.all('SELECT * FROM products', function(err, rows){
+					res.render('product', {
+						message: '',
+						'firstName': '',
+						'surName': '',
+						'mail': mail,
+						'errors': errors,
+						'logedIn': false,
+
+						/// Shop ///
+						'rows': rows || []
+					});
+				});
+			}
+			else {
+				const firstName = rows[0].firstName;
+				const surName = rows[0].surName;
+				const passwordCont = rows[0].password;
+				if (password === passwordCont){
+					req.session['authenticated'] = true;
+					req.session['firstName'] = firstName;
+					req.session['surName'] = surName;
+					req.session['mail'] = mail;
+					console.log('LogedIn.');
+					console.log('Reload: product index: ' + req.session['prodId']);
+					db.all('SELECT * FROM products', function(err, rows){
+						res.render('product', {
+							message: 'Willkommen',
+							'firstName': req.session['firstName'],
+							'surName': req.session['surName'],
+							'mail': '',
+							'errors': errors,
+							'logedIn': true,
+
+							/// Shop ///
+							'rows': rows || []
+						});
+					});
+				}
+				else {
+					errors[1] = 'Falsches Passwort';
+					console.log('Wrong PW');
+					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
+						res.render('product', {
+							message: '',
+							'firstName': '',
+							'surName': '',
+							'mail': mail,
+							'errors': errors,
+							'logedIn': false,
+
+							/// Shop ///
+							'rows': rows || []
+						});
+					});
+				}
+			}
+		});
+	}
+});
+app.post('/productLogOut', function(req, res){
+	// Eine extra LogOut-Methode zum Abmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
+	console.log('LogedOut.');
+	console.log('Reload: product index: ' + req.session['prodId']);
+	//Sessionvariable löschen
+	//delete req.session['authenticated'];
+	//req.session['authenticated'] = false;
+	// Artikelinformationen übermitteln
+	
+	const prodId = parseInt(req.session['prodId']);
+	console.log('Reload2: product index: ' + prodId);
+	db.all(`SELECT * FROM products WHERE id = '${prodId}'`, function(err, rows){
+		res.render('product', {
+			message: '',
+			'firstName': '',
+			'surName': '',
+			'mail': '',
+			'errors': '',
+			'logedIn': false,
+
+			/// Product ///
+			'rows': rows || []
+		});
+	});
+});
+
+// Cart
+app.get('/cart', (req, res) =>{
+	if (req.session['authenticated']){
+		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rows){
+			// Endpreis berechnen
+			let sum = 0;
+			for (var i = 0; i < rows.length; i ++) {
+				sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
+				//Runden auf 2 Stellen nach dem Komma
+			}
+			res.render('cart', {
+				message: '',
+				'firstName': req.session['firstName'],
+				'surName': req.session['surName'],
+				'mail': '',
+				'errors': '',
+				'logedIn': true,
+
+				/// Cart ///
+				'rows': rows || [],
+				'sum': sum
+			});
+		});
+	}
+});
+app.post('/cartInsert/:name/:price', function(req, res){
+	// Methode nur zum Hinzufügen des Produkts zum Warenkorb; hat nureine Texteinblendung als Rückmeldung
+	// Variablen aus dem req. uebernehmen
+	const id = req.session['prodId']
+	const name = req.params['name'];
+	let quantity = parseInt(req.body['quantity']);
+	const price = req.params['price'];
+
+	db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err,rowsProd){
+		// Prüfen ob genügend Artikel im Lager sind
+		if (rowsProd[0].stock >= quantity) {
+			db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err, rowsCheck){
+				// Prüfen ob der Artikel schon im Warenkorb ist
+				if (rowsCheck.length == 0) {
+					// Falls das ausgewählte Produkt noch nicht im Warenkorb ist, wird der Artikel dem Warenkorb hinzufügt
+					db.run(`INSERT INTO cart (mail, id, name, quantity, price) VALUES ('${req.session['mail']}', '${req.session['prodId']}', '${name}', '${quantity}', '${price}')`, function(err){
+						console.log(quantity + ' ' + name + '(s) inserted into cart')
+						// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
+						db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+							res.render('product', {
+								message: 'Wurde ihrem Warenkorb hinzugefügt',
+								'firstName': '',
+								'surName': '',
+								'mail': '',
+								'errors': '',
+								'logedIn': true,
+
+								/// Product ///
+								'rows': rows || []
+							});
+						});
+					});
+				}
+				else {
+				// Falls das ausgewählte Produkt schon im Warenkorb ist, wird die Anzahl hochgezählt
+				quantity += parseInt(rowsCheck[0].quantity);
+				db.run(`UPDATE cart SET quantity = '${quantity}' WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err){
+					console.log(quantity + ' ' + name + '(s) updated into cart')
+					// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
+					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+						res.render('product', {
+							message: 'Wurde ihrem Warenkorb hinzugefügt',
+							'firstName': '',
+							'surName': '',
+							'mail': '',
+							'errors': '',
+							'logedIn': true,
+
+							/// Product ///
+							'rows': rows || []
+						});
+					});
+				});
+			}
+			});
+		}
+		else {
+			console.log('Not in stock');
+			let errors = [];
+			errors[2] = "Nicht genügend Artikel auf Lager";
+			db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+				res.render('product', {
+					message: '',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': errors,
+					'logedIn': true,
+
+					/// Product ///
+					'rows': rows || []
+				});
+			});
+		}
+	});
+});
+app.post('/cartDelete/:id', function(req, res){
+	const id = req.params['id'];
+	// Loeschen des Artikels aus dem Warenkorb
+	db.all(`DELETE FROM cart WHERE mail = '${req.session['mail']}' AND id = '${id}'`, function(err){
+		console.log('product id ' + id + ' deleted from cart')
+		// Ausgabe des neuen Warenkorbes
+		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rows){
+			// Endpreis berechnen
+			let sum = 0;
+			for (var i = 0; i < rows.length; i ++) {
+				sum = parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity);
+			}
+			res.render('cart', {
+				message: '',
+				'firstName': req.session['firstName'],
+				'surName': req.session['surName'],
+				'mail': '',
+				'errors': '',
+				'logedIn': true,
+
+				/// Cart ///
+				'rows': rows || [],
+				'sum': sum
+			});
+		});
+	});
+});
+app.post('/buy', function(req, res){
+	//neue orderID herausfinden
+	req.session['orderId'] = parseInt(0);
+	db.all(`SELECT * FROM orders`, function(err, rowsID) {
+		if (rowsID.length != 0) {
+			const lastID = parseInt(rowsID.length) -1;
+			//console.log('Last Index: ' + lastID);
+			//console.log('Old orderID: ' + rowsID[lastID].orderId]);
+			req.session['orderId'] = parseInt(rowsID[lastID].orderId) + 1;
+			console.log('New orderID: ' + req.session['orderId']);
+		}
+		// Warenkorb des Benutzers auswählen
+		db.all(`SELECT * FROM cart WHERE mail = '${req.session['mail']}'`, function(err, rowsCart) {
+
+			for (let j = 0; j < rowsCart.length; j ++){
+
+				// Runterzählen des Lagerbestandes
+				const prodId = rowsCart[j].id;
+				const quantity = rowsCart[j].quantity;
+				console.log('Product id2: ' + prodId + ' Quantity: ' + quantity);
+				db.all(`SELECT * FROM products WHERE id = '${prodId}'`, function (err, rowsProd) {
+					const oldStock = parseInt(rowsProd[0].stock);
+					const newStock = parseInt(oldStock) - parseInt(quantity);
+					console.log('Product stock (old): ' + oldStock + ' / Product stock (new): ' + newStock);
+					db.run(`UPDATE products SET stock = '${newStock}' WHERE id = '${prodId}'`, function(err) {
+						console.log('updated stock in products id: ' + prodId + ' from ' + oldStock + ' to ' + newStock);
+					});
+				});
+
+				// ausgewählter Warenkorb den Bestellungen hinzufügen
+				db.run(`INSERT INTO orders (orderID, mail, id, name, price, quantity)
+				VALUES ('${req.session['orderId']}', '${req.session['mail']}', '${rowsCart[j].id}', '${rowsCart[j].name}', '${rowsCart[j].price}', '${rowsCart[j].quantity}')`, function(err){
+					console.log('Product id: ' + rowsCart[j].id + ' inserted into orders with orderID: ' + req.session['orderId']);
+					// Löschen des Benutzerwarenkorbes
+					db.run(`DELETE FROM cart WHERE mail = '${req.session['mail']}' AND id = '${prodId}'`, function(err){
+						console.log('Product id: ' + prodId + ' deleted from cart');
+					});
+				});
+			}
+			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
+				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
+				res.render('confirmation', {
+					message: '',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': '',
+					'logedIn': true,
+
+					/// Bestellbestätigung ///
+					'rows': rows || [],
+				});
+			});
+		});
+	});
+});
+
+// Orders
+app.get('/confirmation', function (req, res) {
+	db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
+		console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
+		res.render('confirmation', {
+			message: '',
+			'firstName': req.session['firstName'],
+			'surName': req.session['surName'],
+			'mail': '',
+			'errors': '',
+			'logedIn': true,
+
+			/// Bestellbestätigung ///
+			'rows': rows || [],
+		});
+	});
+});
+
+app.get('/impress', function(req, res){
+	res.sendFile(__dirname + '/impress.html');
 });
