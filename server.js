@@ -542,6 +542,7 @@ app.get('/register', function(req, res){
 		'place': ''
 	});
 });
+
 app.post('/onRegister', function(req, res){
 	const firstName = req.body["firstName"];
 	const surName = req.body["surName"];
@@ -767,4 +768,46 @@ app.post('/onLogOut', function (req, res) {
 			'rows': rows || []
 		});
 	});
+});
+
+
+app.get('/impress', function(req, res){
+	res.render('impress', {
+		
+	if (req.session['authenticated']){
+		db.all(`SELECT * FROM products`, function(err, rows){
+			res.render('shop', {
+				message: '',
+				'firstName': req.session['firstName'],
+				'surName': req.session['surName'],
+				'mail': '',
+				'errors': '', 
+				'logedIn': true,
+				
+				/// Shop ///
+				'start': req.session['start'],
+				'end': req.session['end'],
+				
+				
+			});
+		});
+	}
+	else {
+		db.all(`SELECT * FROM products`, function(err, rows){
+			res.render('shop', {
+				message: '',
+				'firstName': '',
+				'surName': '',
+				'mail': '',
+				'errors': '', 
+				'logedIn': false,
+				
+				/// Shop ///
+				'start': req.session['start'],
+				'end': req.session['end'],
+				
+			});
+		});
+	}	
+	
 });
