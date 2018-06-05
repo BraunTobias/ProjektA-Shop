@@ -10,6 +10,8 @@
 			text-align:center;
 			}
 			
+			
+			
 		</style>
 	</head>
 	<body>
@@ -23,10 +25,28 @@
 			</div>
 			
 			<nav>
-				<a href="/"> Shop </a> <br>
+				<% if(!logedIn) { %> 
+                <form action="onLogIn" method="POST">
+                    <input class="bracket" type="text" value="<%= mail %>" name="mail" ></br> <!-- falls PW falsch war/damit man nicht noch mal die Mail eingeben muss -->
+					<%= errors[0] %> </br>
+                    <input class="bracket" type="password" name="password"></br>
+					<%= errors[1] %> </br>
+                    <input class="buttons" type="submit" value="Login" name="submit"> </p>
+                </form>
+				<a href="/"> Shop </a> </p>
 				<a href="/cart"> Warenkorb </a>
+				
+				<% } else { %>
+					<a href="/"> Shop </a> </p>
+					<a href="/cart"> Warenkorb </a> </p>
+				<form action="onLogOut" method="POST">
+					<input class="buttons" type="submit" value="Logout" name="submit">
+				</form>
+            <% } %>
+				
+				
 			</nav>
-		<div id="bestäti">
+			<div id="bestäti">
 			<% if (rows.length > 0) { %>
 			<table>
 					<tr>
@@ -97,7 +117,11 @@
 					<td></td>
 					<td> <%= sum %> </td>
 				</tr>
+				
 			</table>
+			<form method="POST" action="<%= "/shopBack" %>">
+								<button class="buttons" type="submit">Zurück</button>
+							</form>
 		<% } else { %>
 			Sie haben noch keine Bestellungen getätigt.
 		<% } %>

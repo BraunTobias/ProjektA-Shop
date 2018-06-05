@@ -12,6 +12,10 @@
 			box-sizing: border-box; 
 			}
 			
+			#bestellbutton {
+				padding-top:10px;
+		}
+			
 		</style>
 		
 	</head>
@@ -34,11 +38,12 @@
                 </form>
                 <a href="register">Registrieren</a>
             <% } else { %>
+				<a href="/">Shop</a> <br> </p>
+				<a href="/confirmation">Bestellungen</a> </p>
                 <form action="onLogOut" method="POST">
 					<input class="buttons" type="submit" value="Logout" name="submit"> </p>
                 </form></p>
-                <a href="/">Shop</a> </p>
-				<a href="/confirmation">meine Bestellungen</a>
+                
             <% } %>
         </nav>
         <div id="table">
@@ -70,8 +75,8 @@
 					<td></td>
 					<td>Summe:</td>
 					<td><%= sum %></td><!--Summe-->
-					<td>
-						<form action="/buy" method="POST">
+					<td id="bestellbutton" >
+						<form  action="/buy" method="POST">
 							<input class="buttons" type="submit" value="Bestellen" name="submit"> </p>
 						</form>
 					</td>

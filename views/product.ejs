@@ -33,6 +33,7 @@
 				text-align:left;
 				margin-top:5px;
 				margin-left:250px;	
+				line-height:130%;
 				
 			}
 			
@@ -61,24 +62,26 @@
                 </form>
                 <a href="/register">Registrieren</a> <br>
             <% } else { %>
-                <form action="productLogOut" method="POST">
+				<a href="/"> Shop </a> </p>
+                <a href="/cart">Warenkorb</a> </p>
+				<a href="/confirmation">Bestellungen</a> </p>
+				<form action="productLogOut" method="POST">
 					<input class="buttons"type="submit" value="Logout" name="submit"> </p>
                 </form></p>
-                <a href="/cart">Warenkorb</a> </p>
-				<a href="/confirmation">meine Bestellungen</a> </p>
+				
             <% } %>
 				
         </nav>
         <div id ="Rahmen">
 			<div id="pic">
-					<img src="<%= rows[0].bigLink %>" width="250px" height="220px" />
+					<img src="<%= rows[0].bigLink %>" <!--width="250px" height="220px"--> 
 			</div>
 			<div id="text">
 				
-						<%= rows[0].name %> <br>
+						<%= rows[0].name %>
 						<%= rows[0].price %> € <br>
 						<%= rows[0].stock %> auf Lager <br>
-						<%= rows[0].description %> <br>
+						<%= rows[0].description %> </p>
 					
 						<% if(!logedIn) { %>
 							Vor dem Bestellen bitte anmelden oder registrieren.
