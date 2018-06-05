@@ -37,6 +37,7 @@
 		
 		#viv {
 			font-family:Vivaldi, serif;
+			margin-left:-70px;
 		}
 		
 		#mess {
@@ -152,7 +153,7 @@
 			padding-top:5px;
 			padding-bottom:5px;
 			margin-right:12%;
-			width:50%;
+			width:800px;
 			color:rgb(58, 56, 58);
 			background-color:white;
 			border-radius:5px;
@@ -176,6 +177,17 @@
 			border-radius:5px;
 			margin-left:270px;
 			margin-top:90px;
+		}
+		
+		#zurueck {
+			margin-top:5px;
+			
+		}
+		
+		//Impressum seite
+		
+		#credits {
+			background-color:white;
 		}
 		
 		#footer {
