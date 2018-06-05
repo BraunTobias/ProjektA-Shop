@@ -185,6 +185,238 @@ app.post(['/shopBack'], function(req, res){
 	}
 });
 
+// Register
+app.get('/register', function(req, res){
+	res.render('register', {
+		'errors': [],
+		'firstName': '',
+		'surName': '',
+		'mail': '',
+		'street': '',
+		'number': '',
+		'postcode': '',
+		'place': ''
+	});
+});
+app.post('/onRegister', function(req, res){
+	const firstName = req.body["firstName"];
+	const surName = req.body["surName"];
+	const mail = req.body["mail"];
+	const password = req.body["password"];
+	const passwordCont = req.body["passwordCont"];
+	const street = req.body["street"];
+	const number = req.body["number"];
+	const postcode = req.body["postcode"];
+	const place = req.body["place"];
+	
+	if(firstName == null || firstName == '' || surName == null || surName == '' || mail == null || mail == '' ||
+	password == null || password == '' || passwordCont == null || passwordCont == '' || password != passwordCont || 
+	street == null || street == '' || number == null || number == '' || postcode == null || postcode == '' || place == null || place == ''){
+		let errors = [];
+		if(firstName == null || firstName == ''){
+			console.log('Vorname leer');
+			errors[0] = 'Bitte Vornamen eingeben.';
+		}
+		if(surName == null || surName == ''){
+			console.log('Nachname leer');
+			errors[1] = 'Bitte Nachnamen eingeben.';
+		}
+		if(mail == null || mail == ''){
+			console.log('Mail leer');
+			errors[2] = 'Bitte E-Mail-Adresse eingeben.';
+		}
+		if(password == null || password == ''){
+			console.log('Passwort leer');
+			errors[3] = 'Bitte ein Passwort eingeben.';
+		}
+		if(passwordCont == null || passwordCont == ''){
+			console.log('Passwortkontrolle leer');
+			errors[4] = 'Bitte Passwort wiederholen.';
+		}
+		else if(password != passwordCont){
+			console.log('Passwort stimmt nicht ueberein');
+			errors[5] = 'Passwörter stimmen nicht überein.';
+		}
+		if(street == null || street == ''){
+			console.log('Strasse leer');
+			errors[6] = 'Bitte Straße eingeben.';
+		}
+		if(number == null || number == ''){
+			console.log('Hausnummer leer');
+			errors[7] = 'Bitte Hausnummer eingeben.';
+		}
+		if(postcode == null || postcode == ''){
+			console.log('PLZ leer');
+			errors[8] = 'Bitte Postleitzahl eingeben.';
+		}
+		if(place == null || place == ''){
+			console.log('Ort leer');
+			errors[9] = 'Bitte Wohnort eingeben.';
+		}
+		res.render('register', {
+			'errors': errors,
+			'firstName': firstName,
+			'surName': surName,
+			'mail': mail,
+			'street': street,
+			'number': number,
+			'postcode': postcode,
+			'place': place	
+		});
+	} 
+	else {
+		const sql = `INSERT INTO customers (firstName, surName, mail, password, street, number, postcode, place) VALUES ('${firstName}', '${surName}', '${mail}', '${password}', '${street}', '${number}', '${postcode}', '${place}')`;
+		console.log(sql);
+		db.run(sql, function(err){
+			req.session['firstName'] = firstName;
+			req.session['surName'] = surName;
+			req.session['mail'] = mail;
+			req.session['authenticated'] = true;
+			db.all('SELECT * FROM products', function(err, rows){
+				res.render('shop', {
+					message: 'Willkommen',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': '',
+					'logedIn': true,
+					
+					/// Shop ///
+					'start': req.session['start'],
+					'end': req.session['end'],
+					'rows': rows || []
+				});
+			});
+		});
+	}
+});
+
+app.post('/onLogIn', function(req, res){
+	const mail = req.body["mail"];
+	const password = req.body["password"];
+	let errors = [];
+	
+	if(mail == null || mail == '' || password == null || password == ''){
+		if (mail == null || mail == ''){
+			console.log('Mail empty');
+			errors[0] = 'Bitte E-Mail-Adresse eingeben.';
+		}
+		if (password == null || password == ''){
+			console.log('PW empty');
+			errors[1] = 'Bitte Passwort eingeben.';
+		}
+		console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+		db.all('SELECT * FROM products', function(err, rows){
+			res.render('shop', {
+				message: '',
+				'firstName': '',
+				'surName': '',
+				'mail': mail,
+				'errors': errors,
+				'logedIn': false,
+				
+				/// Shop ///
+				'start': req.session['start'],
+				'end': req.session['end'],
+				'rows': rows || []
+			});
+		});
+	}
+	else {
+		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
+			if (rows.length == 0){
+				errors[1] = 'Sie sind nicht registriert';
+				console.log('Not registered!');
+				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+				db.all('SELECT * FROM products', function(err, rows){
+					res.render('shop', {
+						message: '',
+						'firstName': '',
+						'surName': '',
+						'mail': mail,
+						'errors': errors,
+						'logedIn': false,
+						
+						/// Shop ///
+						'start': req.session['start'],
+						'end': req.session['end'],
+						'rows': rows || []
+					});
+				});
+			}
+			else{
+				const firstName = rows[0].firstName;
+				const surName = rows[0].surName;
+				const passwordCont = rows[0].password;
+				if (password === passwordCont){
+					req.session['authenticated'] = true;
+					req.session['firstName'] = firstName;
+					req.session['surName'] = surName;
+					req.session['mail'] = mail;
+					console.log('LogedIn.');
+					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
+						res.render('shop', {
+							message: 'Willkommen',
+							'firstName': req.session['firstName'],
+							'surName': req.session['surName'],
+							'mail': '',
+							'errors': errors,
+							'logedIn': true,
+							
+							/// Shop ///
+							'start': req.session['start'],
+							'end': req.session['end'],
+							'rows': rows || []
+						});
+					});
+				}
+				else {
+					errors[1] = 'Falsches Passwort';
+					console.log('Wrong PW');
+					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
+						res.render('shop', {
+							message: '',
+							'firstName': '',
+							'surName': '',
+							'mail': mail,
+							'errors': errors,
+							'logedIn': false,
+							
+							/// Shop ///
+							'start': req.session['start'],
+							'end': req.session['end'],
+							'rows': rows || []
+						});
+					});
+				}
+			}
+		});
+	}
+});
+app.post('/onLogOut', function (req, res) {
+	//Sessionvariable löschen
+	delete req.session['authenticated'];
+	console.log('LogedOut.');
+	console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+	db.all('SELECT * FROM products', function(err, rows){
+		res.render('shop', {
+			message: '',
+			'firstName': '',
+			'surName': '',
+			'mail': '',
+			'errors': '',
+			'logedIn': false,
+			
+			/// Shop ///
+			'start': req.session['start'],
+			'end': req.session['end'],
+			'rows': rows || []
+		});
+	});
+});
+
 //Product
 app.post('/product/:id', function(req, res){
 	req.session['prodId'] = parseInt(req.params['id']);
@@ -221,24 +453,6 @@ app.post('/product/:id', function(req, res){
 		});
 	}
 });
-/*app.get('/getProduct/:id', function(req, res){
-	req.session['prodId'] = parseInt(req.params['id']);
-	console.log('Product index: ' + req.session['prodId']);
-	// Artikelinformationen übermitteln
-	db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-		res.render('product', {
-			message: '',
-			'firstName': req.session['firstName'],
-			'surName': req.session['surName'],
-			'mail': '',
-			'errors': '',
-			'logedIn': true,
-			
-			/// Product ///
-			'rows': rows || []
-		});
-	});
-});*/
 app.post('/productLogIn', function(req, res){
 	// Eine extra LogIn-Methode zum Anmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
 	const mail = req.body["mail"];
@@ -269,45 +483,46 @@ app.post('/productLogIn', function(req, res){
 		});
 	}
 	else {
-		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rowsC) {
-			if (err){
+		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
+			if (rows.length == 0){
 				errors[1] = 'Sie sind nicht registriert';
-				console.log('not registered!');
-				res.render('shop', {
-					message: 'Willkommen',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': errors,
-					'logedIn': true,
-					
-					/// Shop ///
-					'start': req.session['start'],
-					'end': req.session['end'],
-					'rows': rows || []
+				console.log('Not registered!');
+				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+				db.all('SELECT * FROM products', function(err, rows){
+					res.render('product', {
+						message: '',
+						'firstName': '',
+						'surName': '',
+						'mail': mail,
+						'errors': errors,
+						'logedIn': false,
+						
+						/// Shop ///
+						'rows': rows || []
+					});
 				});
 			}
-			else{
-				const firstName = rowsC[0].firstName;
-				const surName = rowsC[0].surName;
-				const passwordCont = rowsC[0].password;
+			else {
+				const firstName = rows[0].firstName;
+				const surName = rows[0].surName;
+				const passwordCont = rows[0].password;
 				if (password === passwordCont){
 					req.session['authenticated'] = true;
 					req.session['firstName'] = firstName;
 					req.session['surName'] = surName;
 					req.session['mail'] = mail;
 					console.log('LogedIn.');
-					console.log('Reload: product index: ' + req.session['prodId']);
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
 						res.render('product', {
 							message: 'Willkommen',
 							'firstName': req.session['firstName'],
 							'surName': req.session['surName'],
 							'mail': '',
-							'errors': '',
+							'errors': errors,
 							'logedIn': true,
 							
-							/// Product ///
+							/// Shop ///
 							'rows': rows || []
 						});
 					});
@@ -315,8 +530,8 @@ app.post('/productLogIn', function(req, res){
 				else {
 					errors[1] = 'Falsches Passwort';
 					console.log('Wrong PW');
-					console.log('Reload: product index: ' + req.session['prodId']);
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
 						res.render('product', {
 							message: '',
 							'firstName': '',
@@ -325,7 +540,7 @@ app.post('/productLogIn', function(req, res){
 							'errors': errors,
 							'logedIn': false,
 							
-							/// Product ///
+							/// Shop ///
 							'rows': rows || []
 						});
 					});
@@ -541,217 +756,6 @@ app.post('/buy', function(req, res){
 	});
 });
 
-// Register
-app.get('/register', function(req, res){
-	res.render('register', {
-		'errors': [],
-		'firstName': '',
-		'surName': '',
-		'mail': '',
-		'street': '',
-		'number': '',
-		'postcode': '',
-		'place': ''
-	});
-});
-app.post('/onRegister', function(req, res){
-	const firstName = req.body["firstName"];
-	const surName = req.body["surName"];
-	const mail = req.body["mail"];
-	const password = req.body["password"];
-	const passwordCont = req.body["passwordCont"];
-	const street = req.body["street"];
-	const number = req.body["number"];
-	const postcode = req.body["postcode"];
-	const place = req.body["place"];
-	
-	if(firstName == null || firstName == '' || surName == null || surName == '' || mail == null || mail == '' ||
-	password == null || password == '' || passwordCont == null || passwordCont == '' || password != passwordCont || 
-	street == null || street == '' || number == null || number == '' || postcode == null || postcode == '' || place == null || place == ''){
-		let errors = [];
-		if(firstName == null || firstName == ''){
-			console.log('Vorname leer');
-			errors[0] = 'Bitte Vornamen eingeben.';
-		}
-		if(surName == null || surName == ''){
-			console.log('Nachname leer');
-			errors[1] = 'Bitte Nachnamen eingeben.';
-		}
-		if(mail == null || mail == ''){
-			console.log('Mail leer');
-			errors[2] = 'Bitte E-Mail-Adresse eingeben.';
-		}
-		if(password == null || password == ''){
-			console.log('Passwort leer');
-			errors[3] = 'Bitte ein Passwort eingeben.';
-		}
-		if(passwordCont == null || passwordCont == ''){
-			console.log('Passwortkontrolle leer');
-			errors[4] = 'Bitte Passwort wiederholen.';
-		}
-		else if(password != passwordCont){
-			console.log('Passwort stimmt nicht ueberein');
-			errors[5] = 'Passwörter stimmen nicht überein.';
-		}
-		if(street == null || street == ''){
-			console.log('Strasse leer');
-			errors[6] = 'Bitte Straße eingeben.';
-		}
-		if(number == null || number == ''){
-			console.log('Hausnummer leer');
-			errors[7] = 'Bitte Hausnummer eingeben.';
-		}
-		if(postcode == null || postcode == ''){
-			console.log('PLZ leer');
-			errors[8] = 'Bitte Postleitzahl eingeben.';
-		}
-		if(place == null || place == ''){
-			console.log('Ort leer');
-			errors[9] = 'Bitte Wohnort eingeben.';
-		}
-		res.render('register', {
-			'errors': errors,
-			'firstName': firstName,
-			'surName': surName,
-			'mail': mail,
-			'street': street,
-			'number': number,
-			'postcode': postcode,
-			'place': place	
-		});
-	} 
-	else {
-		const sql = `INSERT INTO customers (firstName, surName, mail, password, street, number, postcode, place) VALUES ('${firstName}', '${surName}', '${mail}', '${password}', '${street}', '${number}', '${postcode}', '${place}')`;
-		console.log(sql);
-		db.run(sql, function(err){
-			req.session['firstName'] = firstName;
-			req.session['surName'] = surName;
-			req.session['mail'] = mail;
-			req.session['authenticated'] = true;
-			db.all('SELECT * FROM products', function(err, rows){
-				res.render('shop', {
-					message: 'Willkommen',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': '',
-					'logedIn': true,
-					
-					/// Shop ///
-					'start': req.session['start'],
-					'end': req.session['end'],
-					'rows': rows || []
-				});
-			});
-		});
-	}
-});
-
-app.post('/onLogIn', function(req, res){
-	const mail = req.body["mail"];
-	const password = req.body["password"];
-	let errors = [];
-	
-	if(mail == null || mail == '' || password == null || password == ''){
-		if (mail == null || mail == ''){
-			console.log('Mail empty');
-			errors[0] = 'Bitte E-Mail-Adresse eingeben.';
-		}
-		if (password == null || password == ''){
-			console.log('PW empty');
-			errors[1] = 'Bitte Passwort eingeben.';
-		}
-		console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
-		db.all('SELECT * FROM products', function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': mail,
-				'errors': errors,
-				'logedIn': false,
-				
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
-		});
-	}
-	else {
-		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
-			if (rows.length == 0){
-				errors[1] = 'Sie sind nicht registriert';
-				console.log('Not registered!');
-				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
-				db.all('SELECT * FROM products', function(err, rows){
-					res.render('shop', {
-						message: '',
-						'firstName': '',
-						'surName': '',
-						'mail': mail,
-						'errors': errors,
-						'logedIn': false,
-						
-						/// Shop ///
-						'start': req.session['start'],
-						'end': req.session['end'],
-						'rows': rows || []
-					});
-				});
-			}
-			else{
-				const firstName = rows[0].firstName;
-				const surName = rows[0].surName;
-				const passwordCont = rows[0].password;
-				if (password === passwordCont){
-					req.session['authenticated'] = true;
-					req.session['firstName'] = firstName;
-					req.session['surName'] = surName;
-					req.session['mail'] = mail;
-					console.log('LogedIn.');
-					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
-					db.all('SELECT * FROM products', function(err, rows){
-						res.render('shop', {
-							message: 'Willkommen',
-							'firstName': req.session['firstName'],
-							'surName': req.session['surName'],
-							'mail': '',
-							'errors': errors,
-							'logedIn': true,
-							
-							/// Shop ///
-							'start': req.session['start'],
-							'end': req.session['end'],
-							'rows': rows || []
-						});
-					});
-				}
-				else {
-					errors[1] = 'Falsches Passwort';
-					console.log('Wrong PW');
-					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
-					db.all('SELECT * FROM products', function(err, rows){
-						res.render('shop', {
-							message: '',
-							'firstName': '',
-							'surName': '',
-							'mail': mail,
-							'errors': errors,
-							'logedIn': false,
-							
-							/// Shop ///
-							'start': req.session['start'],
-							'end': req.session['end'],
-							'rows': rows || []
-						});
-					});
-				}
-			}
-		});
-	}
-});
-
 app.get('/confirmation', function (req, res) {
 	db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
 		console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
@@ -765,28 +769,6 @@ app.get('/confirmation', function (req, res) {
 			
 			/// Bestellbestätigung ///
 			'rows': rows || [],
-		});
-	});
-});
-
-app.post('/onLogOut', function (req, res) {
-	//Sessionvariable löschen
-	delete req.session['authenticated'];
-	console.log('LogedOut.');
-	console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
-	db.all('SELECT * FROM products', function(err, rows){
-		res.render('shop', {
-			message: '',
-			'firstName': '',
-			'surName': '',
-			'mail': '',
-			'errors': '',
-			'logedIn': false,
-			
-			/// Shop ///
-			'start': req.session['start'],
-			'end': req.session['end'],
-			'rows': rows || []
 		});
 	});
 });
