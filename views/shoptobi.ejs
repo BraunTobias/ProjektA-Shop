@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+    <title>Musikshop</title>
+  
+    </head>
+    <body>
+        <header>
+            <h3> Die Musikstube</h3>
+        </header>
+		
+        <h4> <%= message%> <%= firstName%> <%= surName%> </h4>
+        <nav>
+            <% if(!logedIn) { %>
+				Einloggen 
+                <form action="onLogIn" method="POST">
+                    <input class="bracket" type="text" name="mail">
+	            <%= errors[0] %> 
+                    <input class="bracket" type="text" name="password"></br>
+	            <%= errors[1] %>
+                    <input class="button" type="submit" value="Login" name="submit"> </p>
+                </form>
+                <a href="register">Registrieren</a>
+            <% } else { %>
+                <form action="onLogOut" method="POST">
+		    <input class="button" type="submit" value="Logout" name="submit"> </p>
+                </form></p>
+                <a href="/cart">Warenkorb</a>
+            <% } %>
+        </nav>
+	
+        <div id="table">
+            <table>
+                <th> unser Sortiment</th>
+                    <% for(var i = 0; i < rows.length; i++) { %>
+                        <tr>
+		            <td></td>
+		            <td> Produkt </td>
+		            <td> Preis </td>
+		            <td> Bestand </td>
+		        </tr>
+		        <tr>
+                            <td> <img href="<%= rows[i].smallLink %>"> </td>
+                            <td> <%= rows[i].name %> </td>
+                            <td> <%= rows[i].price %> € </td>
+                            <td> <%= rows[i].quantity %> </td>
+                            <td>
+                                <form method="POST" action="<%= "/product/" + rows[i].id %>">
+                                    <button type="submit">ansehen</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <td>
+                            <% if(start > 0) { %>
+                                <form method="POST" action="<%= "/shopBack" %>">
+                                    <button type="submit">Zurück</button>
+                                </form>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if(end < rows.length) { %>
+                                <form method="POST" action="<%= "/shopNext" %>">
+                                    <button type="submit">Weiter</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                </table>
+				
+				
+				
+            </div>
+            <footer>
+            </footer>
+        </body>
+</html>
+
+

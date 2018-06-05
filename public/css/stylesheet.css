@@ -1,68 +1,136 @@
  * {
-            font-family: Arial, Helvetica, sans-serif;   
+            font-family: Arial, Helvetica;
+			text-align:center;			
         }
+		
         body{
             background-color: white;
+			background-image:url("hinter.jpg");
+			background-repeat:vertical-align;
+			background-size:100%;
+			 
         }
         header { 
 		position:fixed;
+		font-family:Vivaldi, serif;
 		width: 100%;
+		background-image:url("hinter.jpg");
+		background-repeat:no-repeat;
+		
+		background-size:100%;
         height:70px;
+		background-clip: border-box;
         border-radius: 5px;
-        background-color:#61c9f9 ;
-        font-size: 28px;
+        
+        font-size: 70px;
         color:grey;
         font-family: Arial, Helvetica, sans-serif;
         text-align: center;
-		padding-top:5px;
-        padding-bottom: 5px;
-        margin-top:-7%;}
+		// erlaubt der Box nicht größer zu werden trotz padding befehl
+		box-sizing: border-box;
+		padding-top:15px;
+		padding-left:70px;
+		padding-bottom:10px;
+        
+        margin-top:-105px;}
+		
+		#viv {
+			font-family:Vivaldi, serif;
+		}
+		
+		#mess {
+			font-family:Georgia;
+			margin-top:105px;
+			height:15px;
+			width:95%;
+			font-size:20px;
+			
+		}
+		
+		#header2 {
+			
+		}
+		
         a {
             text-decoration: none;
             color:rgb(58, 56, 58);
         }
         a:hover{        
-            color:antiquewhite;
+            color:#002080;
         }
+		
+		a:visited {
+				color:black;
+				}
+			a:visited:hover {
+				color:#002080;
+			}
         nav{
-            margin-top:4%;
+            margin-top:70px;
             padding-top:5px;
 			padding-left:2px;
-			
-            text-align: center;
+			padding-right:2px;
+			text-align: center;
             width:150px;
             float: left;
-            background-color:#8cdaff  ;
+            background-color:rgb(18,221,254);
             height:270px;
             border-radius: 7px;
-            color:rgb(58, 56, 58);
+            color:rgb(58, 56, 58);#
+			
         }
 		
 		.bracket {
 				width:90%;
 				text-align:center;
+				
 			}
+			/*#008CBA */
+		.buttons {
+				border-radius:3px;
+				border:2px solid #008CBA;
+				background-color:white;
+				box-shadow:none;
+				box-decoration:none;
+		}
+		.buttons:hover {
+			background-color:rgb(133,255,235);
+		}
+		
+		.buttons:klick{
+			border:none;
+		}
 
         
         form {
             text-align:center;
         }
         button {
-            width:40%;
-            height:15%;
-            background-color:blanchedalmond;
+            
+           
+            
         }
         input {
             margin-top:4px;
         }
         #table {
-            margin-left:20%;
-            margin-top: 7%;
+            margin-left:300px;
+            margin-top: 70px;
+			
             color:rgb(58, 56, 58);
             background-color:white;
 			border-radius:5px;
 			height:50%;
+			width:800px;
+			padding-left:2px;
+			padding-right:2px;
+			
         }
+		
+		span {
+			background-color:white;
+		}
+		
         tr {
             height:70px;
         }
@@ -70,16 +138,20 @@
             width:170px;
         }
 		
+		#ansehen {
+			width:90%;
+		}
 			
 			/*Hier sind die Style Tags der Registrieren Datei untergebracht   */
 		#frm2 {
 			float:right;
 			text-align:left;
-			margin-top: 9%;
-			margin-left:6%;
-			padding-top:1%;
+			margin-top: 70px;
+			margin-left:50px;
+			padding-top:5px;
+			padding-bottom:5px;
 			margin-right:12%;
-			width:65%;
+			width:50%;
 			color:rgb(58, 56, 58);
 			background-color:white;
 			border-radius:5px;
@@ -88,4 +160,29 @@
 		#frm2 form {
 				text-align:left;
 				margin-left:20%;
+		}
+		/* Dieses ist für die Produktseite  */
+		#Rahmen {
+			margin-left:110px;
+			margin-top:8px;
+			float:left;
+		}
+		
+		#bestäti {
+			background-color:white;
+			width:700px;
+			padding:5px;
+			border-radius:5px;
+			margin-left:270px;
+			margin-top:90px;
+		}
+		
+		#footer {
+			margin-top:20px;		
+			width:99%;
+			height:50px;
+		}
+		
+		#footer a:hover {
+			font-size:20px;
 		}

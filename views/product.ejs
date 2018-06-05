@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+		<title>Musikshop</title>
+		<style>*/
+			header {
+				margin-top:-22px;
+			}
+			*/
+			nav {
+				margin-top:90px;
+			}
+			#Rahmen {
+				margin-top:55px;
+				padding-top:2px;
+			}
+			#pic {
+				width:252px;
+				margin-left:50px;
+			}
+			#text {
+				background-color:white;
+				padding:5px;
+				width:600px;
+				height:250px;
+				text-align:left;
+				margin-top:-240px;
+				margin-left:400px;	
+				
+			}
+		</style>
+    </head>
+    <body>
+        <header>
+            <div id="viv">Die Musikstube</div>
+        </header>
+        <div id="mess">
+			<%= message %> <%= firstName %> <%= surName %> 
+		</div>
+		
+        <nav>
+            <% if(!logedIn) { %>
+                <form action="/productLogIn" method="POST">
+                    <input class="bracket" type="text" value="<%= mail %>" name="mail" ></br> <!-- falls PW falsch war/damit man nicht noch mal die Mail eingeben muss -->
+					<%= errors[0] %> </br>
+                    <input class="bracket" type="password" name="password"></br>
+					<%= errors[1] %> </br>
+                    <input class="buttons" type="submit" value="Login" name="submit"> </p>
+                </form>
+                <a href="/register">Registrieren</a> <br>
+            <% } else { %>
+                <form action="productLogOut" method="POST">
+					<input class="buttons"type="submit" value="LOGOUT" name="submit"> </p>
+                </form></p>
+                <a href="/cart">Warenkorb</a> </p>
+				<a href="/confirmation">meine Bestellungen</a> </p>
+            <% } %>
+				<a href="/"> zurück </a>
+        </nav>
+        <div id ="Rahmen">
+			
+				<div id="pic">
+					<div><img src="<%= rows[0].bigLink %>" width="250" height="250" /></div>
+				
+					<div id="text">
+				
+						<%= rows[0].name %> <br>
+						<%= rows[0].price %> € <br>
+						<%= rows[0].stock %> auf Lager <br>
+						<%= rows[0].description %> <br>
+					
+						<% if(!logedIn) { %>
+							Vor dem Bestellen bitte anmelden oder registrieren.
+						<% } else { %>
+							<form action="<%= "/cartInsert/" + rows[0].name + "/" + rows[0].price %>" method="POST">
+								<input type="text" value="1" name="quantity">					
+								<input class="buttons" type="submit" value="In den Warenkorb" name="submit"></br>
+								<%= errors[2] %>
+							</form>
+						<% } %>
+					</div>
+				</div>
+			
+		</div>
+	</body>
+</html>

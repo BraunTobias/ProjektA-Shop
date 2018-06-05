@@ -1,24 +1,101 @@
+<!DOCTYPE html>
 <html>
-    <head>
-
-    </head>
-    <body>
+	<head>
+		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+		<title>Musikshop</title>
+		<style>
+			/*
+			header { 
+			padding-bottom: 5px;
+			margin-top:-20px;
+			margin-bottom:2px;
+			box-sizing: border-box; 
+			}
+			*/
+		</style>
+		
+	</head>
+	<body>
         <header>
-
+            <b>Die Musikstube</b>
         </header>
-
+        <div id="mess">
+			<%= message %> <%= firstName %> <%= surName %> 
+		</div>
+		
         <nav>
-
+            <% if(!logedIn) { %>
+                <form action="onLogIn" method="POST">
+                    <input type="text" value="mail" name="mail" ></br> <!--falls PW falsch war/damit man nicht noch mal die Mail eingeben muss-->
+	            <%= errors[0] %> </br>
+                    <input type="text" name="password"></br>
+	            <%= errors[1] %> </br>
+                    <input class="buttons" type="submit" value="Login" name="submit"> </p>
+                </form>
+                <a href="register">Registrieren</a>
+            <% } else { %>
+                <form action="onLogOut" method="POST">
+					<input class="buttons" type="submit" value="Logout" name="submit"> </p>
+                </form></p>
+                <a href="/">zum Shop</a> </p>
+				<a href="/confirmation">meine Bestellungen</a>
+            <% } %>
         </nav>
-
-        <div>
-            <form>
-                <input type="number"> 
-
-                <button type="submit">
-                Einkauf bestätigen
-                </button>
-            </form>
-        </div>
-    </body>
+        <div id="table">
+            <table>
+				<tr>
+					<td></td>
+					<td> Produkt </td>
+					<td> Stückpreis </td>
+					<td> Anzahl </td>
+					<td> Preis </td>
+				</tr>
+				<% for(var i = 0; i < rows.length; i++) { %>
+					<tr>
+						<td> <img href="<%= rows[i].smallLink %>"> </td>
+						<td> <%= rows[i].name %> </td><!--Produktname-->
+						<td> <%= rows[i].price %> </td><!--Produktpreis-->
+						<td> <%= rows[i].quantity %> </td><!--Bestand-->
+						<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
+						<td>
+							<form method="POST" action="<%= "/cartDelete/" + rows[i].id %>">
+								<button class="buttons" type="submit">entfernen</button>
+							</form>
+						</td>
+					</tr>
+				<% } %>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>Summe:</td>
+					<td><%= sum %></td><!--Summe-->
+					<td>
+						<form action="/buy" method="POST">
+							<input class="buttons" type="submit" value="Bestellen" name="submit"> </p>
+						</form>
+					</td>
+				</tr>
+                    <!-- Hier brauchen wir keine Buttons/Der Benutzer wird schon keine 30 verschiedene Artikel auf einmal kaufen
+					<tr>
+                        <td>
+                            <%/* if(start > 0) { %>
+                                <form method="POST" action="<%= "/shopBack" %>">
+                                    <button type="submit">Zurück</button>
+                                </form>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if(end < rows.length) { %>
+                                <form method="POST" action="<%= "/shopNext" %>">
+                                    <button type="submit">Weiter</button>
+                                </form>
+                            <% } */%>
+                        </td>
+                    </tr>-->
+                </table>
+            </div>
+		<footer>
+		</footer>
+	</body>
 </html>

@@ -3,82 +3,70 @@
     <head>
         <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
         <title>Musikshop</title>
-	
         <style>
-		   
 			
-			header { 
-			padding-bottom: 5px;
-			margin-top:-50px;
-			margin-bottom:2px;
-			position:fixed;
-				}
-			a {
-				text-decoration: none;
-				color:rgb(58, 56, 58);
-			}
-			
-			a:visited {
-				color:black;
-				}
-			a:visited:hover {
-				
-			}
-		
-			
-			
+			/*nav { 
+				margin-top:90px;
+			} */
+					
 			form {
 				text-align:center;
-				
-				
-			}
-			
+				}
 			input {
 				margin-top:4px;
 			}
+			#footer {
+				margin-left:300px;
+				margin-top:600px;
+			}
 			
-            </style>    
-             </head>
-             <body>
-         
-                 <header id="header2">
-                     <h3> Die Musikstube</h3>
-                     
-                 </header>
-				 
-				 <h4>hallo </h4>
-                 <nav>
-					<a href="/">Shop </a>
-					
-					
-					
-                     
-                 </nav>
-
-                 <div id="frm2">
-                     <p><b> Registrierung </b> </p><br>
-                     <form action="/register" method="POST">
-                        Vorname <input type="text" name="fistName" size="25" > </br>
-                        <%= errors[0] %> </br>
-                        Nachname: <input type="text" name="surName" size="25" > </br>
-                        <%= errors[1] %> </br>
-                        E-Mail-Adresse: <input type="text" name="mail" size="25" > </br>
-                        <%= errors[2] %> </br>
-                        Passwort: <input type="password" name="password" size="25"> </br>
-                        <%= errors[3] %> </br>
-                        Passwort wiederholen: <input type="password" name="passwordCont" size="25"> </br>
-                        <%= errors[4] %><%= errors[5] %> </br>
-                        Straße, Hausnummer: <input type="text" name="street" size="25">  <input type="text" name="number" size="4" > </br>
-                        <%= errors[6] %> <%= errors[7] %> </br>
-                        Postleitzahl: <input type="text" name="postcode" size="25" > </br>
-                        <%= errors[8] %> </br>
-                        Wohnort: <input type="text" name="place" size="25" > </br>
-                        <%= errors[9] %> </br>
-                        <input class="button" type="submit" value="Registrieren" name="register"> <br>
-                     </form>
-                 </div>
-                 <footer>
-                    <p> Impressum</p>
-                 </footer>
-             </body>
-         </html>
+		</style>    
+	</head>
+	<body>
+		<header>
+			<div id="viv">Die Musikstube</div>
+		</header>
+		<div id="mess">
+			
+		</div>
+		
+		<nav>
+			<a href="/">Shop</a> </br>
+			<form action="onLogIn" method="POST">
+				<input class="bracket" type="text" name="Login"></br> <!--falls PW falsch war/damit man nicht noch mal die Mail eingeben muss -->
+				<%= errors[0] %> </br>
+				<input class="bracket "type="text" name="password"></br>
+				<%= errors[1] %> </br>
+				<input class="buttons" type="submit" value="Login" name="submit"> </p>
+			</form>
+			<!--<a href="/cart">Warenkorb</a> Nur verfügbar wenn angemeldet -->
+		</nav>
+		
+		<div id="frm2">
+			<h3>Registrierung</h3>
+			<form  action="onRegister" method="POST">
+				Vorname: <input type="text" name="firstName" value="<%= firstName %>"> </br>
+				<%= errors[0] %> </br>
+				Nachname: <input type="text" name="surName" value="<%= surName %>"> </br>
+				<%= errors[1] %> </br>
+				E-Mail-Adresse: <input type="text" name="mail" size="25" value="<%= mail %>"> </br>
+				<%= errors[2] %> </br>
+				Passwort: <input type="password" name="password"> </br>
+				<%= errors[3] %> </br>
+				Passwort wiederholen: <input type="password" name="passwordCont"> </br>
+				<%= errors[4] %><%= errors[5] %> </br>
+				Straße, Hausnummer: <input type="text" name="street" value="<%= street %>"> , <input type="text" name="number" size="4" value="<%= number %>"> </br>
+				<%= errors[6] %> <%= errors[7] %> </br>
+				Postleitzahl: <input type="text" name="postcode" value="<%= postcode %>"> </br>
+				<%= errors[8] %> </br>
+				Wohnort: <input type="text" name="place" value="<%= place %>"> </br>
+				<%= errors[9] %> </br>
+				<input class="buttons" type="submit" value="Registrieren" name="submit"> <br>
+			</form>
+		</div>
+		
+			<div id="footer">
+				<a href="/impress"> Impressum </a>
+			</div>
+	</body>
+</html>

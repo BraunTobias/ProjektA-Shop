@@ -2,53 +2,31 @@
 <html>
 	<head>
 		<title>Musikstube Einkaufsbestätigung</title>
-		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
-		<style>
-			
-			header { 
-			margin-top:-90px;
-			}
-			
-		</style>
 	</head>
 	<body>
-			<header>
-				<div id="viv">Die Musikstube</div>
-			</header>
-			
-			
-			<div id="mess">
-			<%= message %> <%= firstName %> <%= surName %> 
-			</div>
-			
-			<nav>
-				<a href="/"> Shop </a>
-			</nav>
-		<div id="bestäti">
-			<% if (rows.length > 0) { %>
+		<h2>Musikstube</h2>
+		<% if (rows.length > 0) { %>
 			<table>
-					<tr>
-						<td>Auftragsnummer:</td>
-						<td> <%= rows[0].orderId %> </td><!--Auftrags-id-->
-					</tr>
-					<tr>
-						<td>Kundenmail:</td>
-						<td> <%= rows[0].mail %> </td><!--Benutzer-Mail-->
-					</tr>
-					<tr>
-						<td> Produkt </td>
-						<td> Stückpreis </td>
-						<td> Anzahl </td>
-						<td> Preis </td>
-					</tr>
-				<% for(var i = 0; i < rows.length; i++) { %>
-					<tr>
-						<td> <%= rows[i].name %> </td><!--Produktname-->
-						<td> <%= rows[i].price %> </td><!--Produktpreis-->
-						<td> <%= rows[i].quantity %> </td><!--Anzahl-->
-						<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
-					</tr>
-				<% } %>
+				<tr>
+					<td>Auftragsnummer:</td>
+					<td> <%= rows[0].orderId %> </td>
+				</tr>
+				<tr>
+					<td>Kundenmail:</td>
+					<td> <%= rows[0].mail %> </td>
+				</tr>
+				<tr>
+					<td> Produkt </td>
+					<td> Stückpreis </td>
+					<td> Anzahl </td>
+					<td> Preis </td>
+				</tr>
+				<tr>
+					<td> <%= rows[0].name %> </td><!--Produktname-->
+					<td> <%= rows[0].price %> </td><!--Produktpreis-->
+					<td> <%= rows[0].quantity %> </td><!--Anzahl-->
+					<td> <%= parseFloat(rows[0].price) * parseInt(rows[0].quantity) %> </td>
+				</tr>
 				<%	let sum = parseFloat(rows[0].price) * parseInt(rows[0].quantity);
 					for (let i = 1; i < rows.length ; i ++) {
 						if ( rows[i - 1].orderId == rows[i].orderId ) { 
@@ -99,8 +77,5 @@
 		<% } else { %>
 			Sie haben noch keine Bestellungen getätigt.
 		<% } %>
-		
-		</div>
-		<div id
 	</body>
 </html>
