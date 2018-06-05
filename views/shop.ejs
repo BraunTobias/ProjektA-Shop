@@ -60,7 +60,7 @@
 							</form>
 						<% } %>
 					</td>
-					<td id="tdNavBtn"><%= start %> bis <%= end %> / <%= rows.length %></td>
+					<td id="tdNavBtn"><%= start + 1 %> bis <%= end %> / <%= rows.length %></td>
 					<td id="tdNavBtn">
 						<% if(end < rows.length) { %>
 							<form method="POST" action="<%= "/shopNext" %>">
