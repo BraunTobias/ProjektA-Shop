@@ -1,24 +1,78 @@
+<!DOCTYPE html>
 <html>
-    <head>
-
-    </head>
-    <body>
+	<head>
+		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+		<title>Musikshop</title>
+		<style>
+			#bestellbutton {
+				padding-top:10px;
+			}
+		</style>
+	</head>
+	<body>
         <header>
-
+            <div ><a id="viv" href ="/" >Die Musikstube</a></div>
         </header>
-
+        <div id="mess">
+			<%= message %> <%= firstName %> <%= surName %> 
+		</div>
         <nav>
-
+            <% if(!logedIn) { %>
+                <form action="onLogIn" method="POST">
+					<input type="text" value="mail" name="mail" ></br> <!--falls PW falsch war/damit man nicht noch mal die Mail eingeben muss-->
+					<%= errors[0] %> </br>
+					<input type="text" name="password"></br>
+					<%= errors[1] %> </br>
+					<input class="buttons" type="submit" value="Login" name="submit"> </p>
+				</form>
+                <a href="register">Registrieren</a>
+            <% } else { %>
+				<a href="/">Shop</a> <br> </p>
+				<a href="/confirmation">Bestellungen</a> </p>
+                <form action="/onLogOut" method="POST">
+					<input class="buttons" type="submit" value="Logout" name="submit"> </p>
+                </form></p>
+            <% } %>
         </nav>
-
-        <div>
-            <form>
-                <input type="number"> 
-
-                <button type="submit">
-                Einkauf bestätigen
-                </button>
-            </form>
-        </div>
-    </body>
+        <div id="bestäti">
+            <table id="table">
+				<tr>
+					<td></td>
+					<td> Produkt </td>
+					<td> Stückpreis </td>
+					<td> Anzahl </td>
+					<td> Preis </td>
+				</tr>
+				<% for(var i = 0; i < rows.length; i++) { %>
+					<tr>
+						<td> <img href="<%= rows[i].smallLink %>"> </td>
+						<td> <%= rows[i].name %> </td><!--Produktname-->
+						<td> <%= (rows[i].price).toFixed(2) %> </td><!--Produktpreis-->
+						<td> <%= rows[i].quantity %> </td><!--Bestand-->
+						<td> <%= (parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2) %> </td>
+						<td id="delButton" >
+							<form method="POST" action="<%= "/cartDelete/" + rows[i].id %>">
+								<button class="buttons" type="submit">Entfernen</button>
+							</form>
+						</td>
+					</tr>
+				<% } %>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>Summe:</td>
+					<td><%= (sum).toFixed(2) %></td><!--Summe-->
+					<td id="bestellbutton" >
+						<form  action="/buy" method="POST">
+							<input class="buttons" type="submit" value="Bestellen" name="submit"> </p>
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="footer">
+			<a href="/impress"> Impressum </a>
+		</div>
+	</body>
 </html>

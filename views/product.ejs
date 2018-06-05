@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+		<title>Musikshop</title>
+		<style>
+			#Rahmen {
+				float: center;
+				margin-top: 70px;
+				margin-left: 350px;
+				height:350px;
+				width:900px;
+				background-color: white;
+				border-radius: 7px;
+				padding-top:8px;
+			}
+			#text {
+				padding:10px;
+				width:500px;
+				height:250px;
+				text-align:left;
+				margin-left:300px;	
+				line-height:130%;
+			}
+			#footer {
+				float: left;
+				margin-top: 20px;
+				margin-left: 0px;
+			}
+			#img {
+				float: left;
+				margin-top: 50px;
+				margin-left: 25px;
+				width: 250px;
+				height: 250px;
+			}
+		</style>
+    </head>
+    <body>
+        <header>
+            <div ><a id="viv" href ="/" >Die Musikstube</a></div>
+        </header>
+        <div id="mess">
+			<%= message %> <%= firstName %> <%= surName %> 
+		</div>
+        <nav>
+            <% if(!logedIn) { %>
+                <form action="/productLogIn" method="POST">
+                    <input class="bracket" type="text" value="<%= mail %>" name="mail" ></br> <!-- falls PW falsch war/damit man nicht noch mal die Mail eingeben muss -->
+					<%= errors[0] %> </br>
+                    <input class="bracket" type="password" name="password"></br>
+					<%= errors[1] %> </br>
+                    <input class="buttons" type="submit" value="Login" name="submit"> </p>
+                </form>
+                <a href="/register">Registrieren</a> </p>
+				<a href="/"> Shop </a> </p>
+            <% } else { %>
+				<a href="/"> Shop </a> </p>
+                <a href="/cart">Warenkorb</a> </p>
+				<a href="/confirmation">Bestellungen</a> </p>
+				<form action="productLogOut" method="POST">
+					<input class="buttons"type="submit" value="Logout" name="submit"> </p>
+                </form></p>
+            <% } %>
+        </nav>
+        <div id ="Rahmen">
+			<div>
+				<img id="img" src="<%= rows[0].bigLink %>" /> <!--width="250px" height="220px"--> 
+			</div>
+			<div id="text">
+				<h4> <%= rows[0].name %> </h4> </p>
+				Preis: <%= (rows[0].price).toFixed(2) %> € </p>
+				Auf Lager: <%= rows[0].stock %> </p>
+				<%= rows[0].description %> </p>
+				<% if(!logedIn) { %>
+					Vor dem Bestellen bitte anmelden oder registrieren.
+				<% } else { %>
+					<form action="<%= "/cartInsert/" + rows[0].name + "/" + rows[0].price %>" method="POST">
+						<input type="text" value="1" name="quantity">					
+						<input class="buttons" type="submit" value="In den Warenkorb" name="submit"></br>
+						<%= errors[2] %>
+					</form>
+				<% } %>
+				</p>
+				<a class="buttons" id="zurueck" href="/"> Zurück </a>
+			</div>
+		</div>
+		<div id="footer">
+			<a href="/impress"> Impressum </a>
+		</div>
+	</body>
+</html>
