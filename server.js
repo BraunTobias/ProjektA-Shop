@@ -511,6 +511,20 @@ app.post('/buy', function(req, res){
 			}
 			// Ausgabe der Bestellbestätigung
 			
+			/*db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
+				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
+				res.render('confirmation', {
+					message: '',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': '',
+					'logedIn': true,
+					
+					/// Bestellbestätigung ///
+					'rows': rows || [],
+				});
+			});*/
 			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
 				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
 				res.render('confirmation', {
@@ -542,7 +556,6 @@ app.get('/register', function(req, res){
 		'place': ''
 	});
 });
-
 app.post('/onRegister', function(req, res){
 	const firstName = req.body["firstName"];
 	const surName = req.body["surName"];
@@ -684,13 +697,13 @@ app.post('/onLogIn', function(req, res){
 					console.log('LogedIn.');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						if (parseInt(req.session['start'])-2 <= 0){
+						/*if (parseInt(req.session['start'])- <= 0){
 							req.session['start'] = 0;
 							req.session['end'] = 2;
 						} else {
 							req.session['start'] = parseInt(req.session['start']) - 2;
 							req.session['end'] = parseInt(req.session['end']) - 2;
-						}
+						}*/
 						res.render('shop', {
 							message: 'Willkommen',
 							'firstName': req.session['firstName'],
@@ -768,46 +781,4 @@ app.post('/onLogOut', function (req, res) {
 			'rows': rows || []
 		});
 	});
-});
-
-
-app.get('/impress', function(req, res){
-	res.render('impress', {
-		
-	if (req.session['authenticated']){
-		db.all(`SELECT * FROM products`, function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '', 
-				'logedIn': true,
-				
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				
-				
-			});
-		});
-	}
-	else {
-		db.all(`SELECT * FROM products`, function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '', 
-				'logedIn': false,
-				
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				
-			});
-		});
-	}	
-	
 });
