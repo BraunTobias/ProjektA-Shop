@@ -271,7 +271,21 @@ app.post('/productLogIn', function(req, res){
 	else {
 		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rowsC) {
 			if (err){
-				console.log(err.message);
+				errors[1] = 'Sie sind nicht registriert';
+				console.log('not registered!');
+				res.render('shop', {
+					message: 'Willkommen',
+					'firstName': req.session['firstName'],
+					'surName': req.session['surName'],
+					'mail': '',
+					'errors': errors,
+					'logedIn': true,
+					
+					/// Shop ///
+					'start': req.session['start'],
+					'end': req.session['end'],
+					'rows': rows || []
+				});
 			}
 			else{
 				const firstName = rowsC[0].firstName;
@@ -509,22 +523,6 @@ app.post('/buy', function(req, res){
 					});
 				});
 			}
-			// Ausgabe der Bestellbestätigung
-			
-			/*db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
-				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
-				res.render('confirmation', {
-					message: '',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': '',
-					'logedIn': true,
-					
-					/// Bestellbestätigung ///
-					'rows': rows || [],
-				});
-			});*/
 			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
 				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
 				res.render('confirmation', {
@@ -682,8 +680,25 @@ app.post('/onLogIn', function(req, res){
 	}
 	else {
 		db.all(`SELECT * FROM customers WHERE mail = '${mail}'`, function(err, rows) {
-			if (err){
-				console.log(err.message);
+			if (rows.length == 0){
+				errors[1] = 'Sie sind nicht registriert';
+				console.log('Not registered!');
+				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
+				db.all('SELECT * FROM products', function(err, rows){
+					res.render('shop', {
+						message: '',
+						'firstName': '',
+						'surName': '',
+						'mail': mail,
+						'errors': errors,
+						'logedIn': false,
+						
+						/// Shop ///
+						'start': req.session['start'],
+						'end': req.session['end'],
+						'rows': rows || []
+					});
+				});
 			}
 			else{
 				const firstName = rows[0].firstName;
@@ -697,13 +712,6 @@ app.post('/onLogIn', function(req, res){
 					console.log('LogedIn.');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						/*if (parseInt(req.session['start'])- <= 0){
-							req.session['start'] = 0;
-							req.session['end'] = 2;
-						} else {
-							req.session['start'] = parseInt(req.session['start']) - 2;
-							req.session['end'] = parseInt(req.session['end']) - 2;
-						}*/
 						res.render('shop', {
 							message: 'Willkommen',
 							'firstName': req.session['firstName'],
