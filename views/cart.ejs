@@ -4,20 +4,20 @@
 		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
 		<title>Musikshop</title>
 		<style>
-			/*
+			
 			header { 
 			padding-bottom: 5px;
-			margin-top:-20px;
+			margin-top:-120px;
 			margin-bottom:2px;
 			box-sizing: border-box; 
 			}
-			*/
+			
 		</style>
 		
 	</head>
 	<body>
         <header>
-            <b>Die Musikstube</b>
+            <div id="viv">Die Musikstube</div>
         </header>
         <div id="mess">
 			<%= message %> <%= firstName %> <%= surName %> 
@@ -37,7 +37,7 @@
                 <form action="onLogOut" method="POST">
 					<input class="buttons" type="submit" value="Logout" name="submit"> </p>
                 </form></p>
-                <a href="/">zum Shop</a> </p>
+                <a href="/">Shop</a> </p>
 				<a href="/confirmation">meine Bestellungen</a>
             <% } %>
         </nav>

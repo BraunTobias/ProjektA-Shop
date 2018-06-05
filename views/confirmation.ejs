@@ -6,7 +6,8 @@
 		<style>
 			
 			header { 
-			margin-top:-90px;
+			margin-top:-110px;
+			text-align:center;
 			}
 			
 		</style>
@@ -22,11 +23,12 @@
 			</div>
 			
 			<nav>
-				<a href="/"> Shop </a>
+				<a href="/"> Shop </a> <br>
+				<a href="/cart"> Warenkorb </a>
 			</nav>
 		<div id="bestäti">
 			<% if (rows.length > 0) { %>
-				<table>
+			<table>
 					<tr>
 						<td>Auftragsnummer:</td>
 						<td> <%= rows[0].orderId %> </td><!--Auftrags-id-->
@@ -41,63 +43,69 @@
 						<td> Anzahl </td>
 						<td> Preis </td>
 					</tr>
+				<% for(var i = 0; i < rows.length; i++) { %>
 					<tr>
-						<td> <%= rows[0].name %> </td><!--Produktname-->
-						<td> <%= rows[0].price %> </td><!--Produktpreis-->
-						<td> <%= rows[0].quantity %> </td><!--Anzahl-->
-						<td> <%= parseFloat(rows[0].price) * parseInt(rows[0].quantity) %> </td>
+						<td> <%= rows[i].name %> </td><!--Produktname-->
+						<td> <%= rows[i].price %> </td><!--Produktpreis-->
+						<td> <%= rows[i].quantity %> </td><!--Anzahl-->
+						<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
 					</tr>
-					</tr>
-					<%	let sum = parseFloat(rows[0].price) * parseInt(rows[0].quantity);
-						for (let i = 1; i < rows.length ; i ++) {
-							if ( rows[i - 1].orderId == rows[i].orderId ) { 
-								sum += parseFloat(rows[i].price) * parseInt(rows[i].quantity) %>
-								<tr>
-									<td> <%= rows[i].name %> </td><!--Produktname-->
-									<td> <%= rows[i].price %> </td><!--Produktpreis-->
-									<td> <%= rows[i].quantity %> </td><!--Anzahl-->
-									<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
-								</tr>
-							<% } else { %>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td> <%= sum %> </td> <% sum = 0 %>
-								</tr>
-								<tr></tr>
-								<tr>
-									<td>Auftragsnummer:</td>
-									<td> <%= rows[i].orderId %> </td>
-								</tr>
-								<tr>
-									<td>Kundenmail:</td>
-									<td> <%= rows[i].mail %> </td>
-								</tr>
-								<tr>
-									<td> Produkt </td>
-									<td> Stückpreis </td>
-									<td> Anzahl </td>
-									<td> Preis </td>
-								</tr>
-								<tr>
-									<td> <%= rows[i].name %> </td><!--Produktname-->
-									<td> <%= rows[i].price %> </td><!--Produktpreis-->
-									<td> <%= rows[i].quantity %> </td><!--Anzahl-->
-									<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td> <% sum = parseFloat(rows[i].price) * parseInt(rows[i].quantity); %>
-								</tr>
-							<% } %>
-					<% } %>
-					<tr>	
-						<td></td>
-						<td></td>
-						<td></td>
-						<td> <%= sum %> </td>
-					</tr>
-				</table>
-			<% } else { %>
-				Sie haben noch keine Bestellungen getätigt.
-			<% } %>
+				<% } %>
+				<%	let sum = parseFloat(rows[0].price) * parseInt(rows[0].quantity);
+					for (let i = 1; i < rows.length ; i ++) {
+						if ( rows[i - 1].orderId == rows[i].orderId ) { 
+							sum += parseFloat(rows[i].price) * parseInt(rows[i].quantity) %>
+							<tr>
+								<td> <%= rows[i].name %> </td><!--Produktname-->
+								<td> <%= rows[i].price %> </td><!--Produktpreis-->
+								<td> <%= rows[i].quantity %> </td><!--Anzahl-->
+								<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td>
+							</tr>
+						<% } else { %>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td> <%= sum %> </td> <% sum = 0 %>
+							</tr>
+							<tr></tr>
+							<tr>
+								<td>Auftragsnummer:</td>
+								<td> <%= rows[i].orderId %> </td>
+							</tr>
+							<tr>
+								<td>Kundenmail:</td>
+								<td> <%= rows[i].mail %> </td>
+							</tr>
+							<tr>
+								<td> Produkt </td>
+								<td> Stückpreis </td>
+								<td> Anzahl </td>
+								<td> Preis </td>
+							</tr>
+							<tr>
+								<td> <%= rows[i].name %> </td><!--Produktname-->
+								<td> <%= rows[i].price %> </td><!--Produktpreis-->
+								<td> <%= rows[i].quantity %> </td><!--Anzahl-->
+								<td> <%= parseFloat(rows[i].price) * parseInt(rows[i].quantity) %> </td> <% sum = parseFloat(rows[i].price) * parseInt(rows[i].quantity); %>
+							</tr>
+						<% } %>
+				<% } %>
+				<tr>	
+					<td></td>
+					<td></td>
+					<td></td>
+					<td> <%= sum %> </td>
+				</tr>
+			</table>
+		<% } else { %>
+			Sie haben noch keine Bestellungen getätigt.
+		<% } %>
+		
 		</div>
+		
+		<div id="footer">
+				<a href="/impress"> Impressum </a>
+			</div>
 	</body>
 </html>

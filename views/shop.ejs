@@ -3,6 +3,11 @@
 	<head>
 		<link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
 		<title>Musikshop</title>
+		<style>
+			header {
+				text-align:center;
+			}
+		</style>
 		
 	</head>
 	<body>
@@ -25,11 +30,14 @@
                 </form>
                 <a href="/register">Registrieren</a>
             <% } else { %>
-                <form action="onLogOut" method="POST">
-					<input class="buttons" type="submit" value="Logout" name="submit"> </p>
-                </form></p>
+                 
+                
                 <a href="/cart">Warenkorb</a> </p>
-				<a href="/confirmation">meine Bestellungen</a>
+				<a href="/confirmation">Bestellungen</a></p>
+				
+				<form action="onLogOut" method="POST">
+					<input class="buttons" type="submit" value="Logout" name="submit">
+				</form>
             <% } %>
         </nav>
         <div >
