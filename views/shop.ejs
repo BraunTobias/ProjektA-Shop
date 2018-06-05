@@ -46,7 +46,7 @@
 						<td><img src="<%= rows[i].smallLink %>" width="100" height="120" /></td>
 						<td><span> <%= rows[i].name %> </span></td>
 						<td><span> <%= rows[i].price %></span> € </td>
-						<td> <span><%= rows[i].quantity %></span> </td><!--Anzahl-->
+						<td> <span><%= rows[i].stock %></span> </td><!--Anzahl-->
 						<td>
 							<form method="POST" action="<%= "/product/" + rows[i].id %>">
 								<button class="buttons" type="submit">ansehen</button>
