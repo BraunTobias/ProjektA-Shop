@@ -10,7 +10,7 @@ const app = express()
 app.use(express.static( "public" ));
 
 // Body-Parser initialisieren
-const bodyParser= require('body-parser')
+const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended: true}))
 
 // EJS Template Engine initialisieren
@@ -38,38 +38,13 @@ app.get(['/'], function(req, res){
 	if (req.session['authenticated']){
 		console.log("Load: shop from " +  req.session['start'] + " - " + req.session['end']);
 		db.all(`SELECT * FROM products`, function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-
-			});
+			res.render('shop', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true,  /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 	else {
 		db.all(`SELECT * FROM products`, function(err, rows){
 			console.log("Load: shop from " +  req.session['start'] + " - " + req.session['end']);
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
+			res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Shop */ 'start': req.session['start'],  'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 });
@@ -84,20 +59,7 @@ app.post(['/shopNext'], function(req, res){
 				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
 			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
-			res.render('shop', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-
-			});
+			res.render('shop', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 	else {
@@ -110,19 +72,7 @@ app.post(['/shopNext'], function(req, res){
 				req.session['start'] = parseInt(req.session['start']) + 9;
 			}
 			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
+			res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 });
@@ -140,20 +90,7 @@ app.post(['/shopBack'], function(req, res){
 				req.session['start'] = parseInt(req.session['start']) - 9;
 			}
 			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
-			res.render('shop', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-
-			});
+			res.render('shop', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 	else {
@@ -168,37 +105,15 @@ app.post(['/shopBack'], function(req, res){
 				req.session['start'] = parseInt(req.session['start']) - 9;
 				req.session['end'] = parseInt(req.session['end']) - 9;
 			}
-
 			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
+			res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 });
 
 // Register
 app.get('/register', function(req, res){
-	res.render('register', {
-		'errors': [],
-		'firstName': '',
-		'surName': '',
-		'mail': '',
-		'street': '',
-		'number': '',
-		'postcode': '',
-		'place': ''
-	});
+	res.render('register', { 'errors': [], 'firstName': '', 'surName': '', 'mail': '', 'street': '', 'number': '', 'postcode': '', 'place': '' });
 });
 app.post('/onRegister', function(req, res){
 	const firstName = req.body["firstName"];
@@ -210,86 +125,78 @@ app.post('/onRegister', function(req, res){
 	const number = req.body["number"];
 	const postcode = req.body["postcode"];
 	const place = req.body["place"];
-
-	if(firstName == null || firstName == '' || surName == null || surName == '' || mail == null || mail == '' ||
-	password == null || password == '' || passwordCont == null || passwordCont == '' || password != passwordCont ||
-	street == null || street == '' || number == null || number == '' || postcode == null || postcode == '' || place == null || place == ''){
+	
+	if(firstName == null || firstName == '' || surName == null || surName == '' || 
+	mail == null || mail == '' || mail === '@' || 	password == null || password == '' || passwordCont == null || passwordCont == '' || 
+	password != passwordCont || street == null || street == '' || number == null || number == '' || postcode == null || postcode == '' ||
+	postcode.length != 5 || postcode.toLowerCase() !== ("a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z").toLowerCase() ||
+	place == null || place == ''){
 		let errors = [];
 		if(firstName == null || firstName == ''){
-			console.log('Vorname leer');
+			console.log('Forename empty.');
 			errors[0] = 'Bitte Vornamen eingeben.';
 		}
 		if(surName == null || surName == ''){
-			console.log('Nachname leer');
+			console.log('Surname empty.');
 			errors[1] = 'Bitte Nachnamen eingeben.';
 		}
+		if (mail !== '@'){
+			console.log('Mail wrong.');
+			errors[2] = 'E-Mail falsch.';
+		}
 		if(mail == null || mail == ''){
-			console.log('Mail leer');
+			console.log('Mail empty.');
 			errors[2] = 'Bitte E-Mail-Adresse eingeben.';
 		}
 		if(password == null || password == ''){
-			console.log('Passwort leer');
+			console.log('PW empty.');
 			errors[3] = 'Bitte ein Passwort eingeben.';
 		}
 		if(passwordCont == null || passwordCont == ''){
-			console.log('Passwortkontrolle leer');
+			console.log('PW-Cont empty');
 			errors[4] = 'Bitte Passwort wiederholen.';
 		}
 		else if(password != passwordCont){
-			console.log('Passwort stimmt nicht ueberein');
+			console.log('PW != PW-Cont');
 			errors[5] = 'Passwörter stimmen nicht überein.';
 		}
 		if(street == null || street == ''){
-			console.log('Strasse leer');
+			console.log('Street empty.');
 			errors[6] = 'Bitte Straße eingeben.';
 		}
 		if(number == null || number == ''){
-			console.log('Hausnummer leer');
+			console.log('Number empty.');
 			errors[7] = 'Bitte Hausnummer eingeben.';
 		}
 		if(postcode == null || postcode == ''){
-			console.log('PLZ leer');
+			console.log('PostCode empty.');
 			errors[8] = 'Bitte Postleitzahl eingeben.';
 		}
+		else if (postcode.length != 5 || postcode.toLowerCase() !== ("a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z").toLowerCase()) {
+			console.log('PostCode too short/long or contains chars.');
+			errors[8] = 'Postleitzahl falsch.';
+		}
 		if(place == null || place == ''){
-			console.log('Ort leer');
+			console.log('Place empty.');
 			errors[9] = 'Bitte Wohnort eingeben.';
 		}
-		res.render('register', {
-			'errors': errors,
-			'firstName': firstName,
-			'surName': surName,
-			'mail': mail,
-			'street': street,
-			'number': number,
-			'postcode': postcode,
-			'place': place
-		});
+		res.render('register', { 'errors': errors, 'firstName': firstName, 'surName': surName, 'mail': mail, 'street': street, 'number': number, 'postcode': postcode, 'place': place });
 	}
 	else {
-		const sql = `INSERT INTO customers (firstName, surName, mail, password, street, number, postcode, place) VALUES ('${firstName}', '${surName}', '${mail}', '${password}', '${street}', '${number}', '${postcode}', '${place}')`;
-		db.run(sql, function(err){
-			req.session['firstName'] = firstName;
-			req.session['surName'] = surName;
-			req.session['mail'] = mail;
-			req.session['authenticated'] = true;
-			console.log("Registered and logedIn");
-			console.log("Reload: shop from " +  req.session['start'] + " - " + req.session['end']);
-			db.all('SELECT * FROM products', function(err, rows){
-				res.render('shop', {
-					message: 'Willkommen',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': '',
-					'logedIn': true,
-
-					/// Shop ///
-					'start': req.session['start'],
-					'end': req.session['end'],
-					'rows': rows || []
+		db.all(`SELECT * FROM customers WHERE mail = 'mail'`, function(err, rows) {
+			if (rows.length == 0) {
+				db.run(`INSERT INTO customers (firstName, surName, mail, password, street, number, postcode, place) VALUES ('${firstName}', '${surName}', '${mail}', '${password}', '${street}', '${number}', '${postcode}', '${place}')`, function(err){
+					req.session['firstName'] = firstName;
+					req.session['surName'] = surName;
+					req.session['mail'] = mail;
+					req.session['authenticated'] = true;
+					console.log('Registered and logedIn');
+					console.log('Reload: shop from ' +  req.session['start'] + " - " + req.session['end']);
+					db.all('SELECT * FROM products', function(err, rows){
+						res.render('shop', { message: 'Willkommen', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
+					});
 				});
-			});
+			}
 		});
 	}
 });
@@ -311,19 +218,7 @@ app.post('/onLogIn', function(req, res){
 		}
 		console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 		db.all('SELECT * FROM products', function(err, rows){
-			res.render('shop', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': mail,
-				'errors': errors,
-				'logedIn': false,
-
-				/// Shop ///
-				'start': req.session['start'],
-				'end': req.session['end'],
-				'rows': rows || []
-			});
+			res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 		});
 	}
 	else {
@@ -333,19 +228,7 @@ app.post('/onLogIn', function(req, res){
 				console.log('Not registered!');
 				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 				db.all('SELECT * FROM products', function(err, rows){
-					res.render('shop', {
-						message: '',
-						'firstName': '',
-						'surName': '',
-						'mail': mail,
-						'errors': errors,
-						'logedIn': false,
-
-						/// Shop ///
-						'start': req.session['start'],
-						'end': req.session['end'],
-						'rows': rows || []
-					});
+					res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 				});
 			}
 			else{
@@ -360,19 +243,7 @@ app.post('/onLogIn', function(req, res){
 					console.log('LogedIn.');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						res.render('shop', {
-							message: 'Willkommen',
-							'firstName': req.session['firstName'],
-							'surName': req.session['surName'],
-							'mail': '',
-							'errors': errors,
-							'logedIn': true,
-
-							/// Shop ///
-							'start': req.session['start'],
-							'end': req.session['end'],
-							'rows': rows || []
-						});
+						res.render('shop', { message: 'Willkommen', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': errors, 'logedIn': true, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 					});
 				}
 				else {
@@ -380,19 +251,7 @@ app.post('/onLogIn', function(req, res){
 					console.log('Wrong PW');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						res.render('shop', {
-							message: '',
-							'firstName': '',
-							'surName': '',
-							'mail': mail,
-							'errors': errors,
-							'logedIn': false,
-
-							/// Shop ///
-							'start': req.session['start'],
-							'end': req.session['end'],
-							'rows': rows || []
-						});
+						res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 					});
 				}
 			}
@@ -405,19 +264,7 @@ app.post('/onLogOut', function (req, res) {
 	console.log('LogedOut.');
 	console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 	db.all('SELECT * FROM products', function(err, rows){
-		res.render('shop', {
-			message: '',
-			'firstName': '',
-			'surName': '',
-			'mail': '',
-			'errors': '',
-			'logedIn': false,
-
-			/// Shop ///
-			'start': req.session['start'],
-			'end': req.session['end'],
-			'rows': rows || []
-		});
+		res.render('shop', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Shop */ 'start': req.session['start'], 'end': req.session['end'], 'rows': rows || [] });
 	});
 });
 
@@ -428,32 +275,12 @@ app.post('/product/:id', function(req, res){
 	// Artikelinformationen übermitteln
 	if (req.session['authenticated']){
 		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Product ///
-				'rows': rows || []
-			});
+			res.render('product', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Product */ 'rows': rows || [] });
 		});
 	}
 	else {
 		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': '',
-				'errors': '',
-				'logedIn': false,
-
-				/// Product ///
-				'rows': rows || []
-			});
+			res.render('product', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Product */ 'rows': rows || [] });
 		});
 	}
 });
@@ -473,17 +300,7 @@ app.post('/productLogIn', function(req, res){
 		}
 		console.log('Reload: product index: ' + req.session['prodId']);
 		db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-			res.render('product', {
-				message: '',
-				'firstName': '',
-				'surName': '',
-				'mail': mail,
-				'errors': errors,
-				'logedIn': false,
-
-				/// Product ///
-				'rows': rows || []
-			});
+			res.render('product', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Product */ 'rows': rows || [] });
 		});
 	}
 	else {
@@ -493,17 +310,7 @@ app.post('/productLogIn', function(req, res){
 				console.log('Not registered!');
 				console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 				db.all('SELECT * FROM products', function(err, rows){
-					res.render('product', {
-						message: '',
-						'firstName': '',
-						'surName': '',
-						'mail': mail,
-						'errors': errors,
-						'logedIn': false,
-
-						/// Shop ///
-						'rows': rows || []
-					});
+					res.render('product', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Shop */ 'rows': rows || [] });
 				});
 			}
 			else {
@@ -518,17 +325,7 @@ app.post('/productLogIn', function(req, res){
 					console.log('LogedIn.');
 					console.log('Reload: product index: ' + req.session['prodId']);
 					db.all('SELECT * FROM products', function(err, rows){
-						res.render('product', {
-							message: 'Willkommen',
-							'firstName': req.session['firstName'],
-							'surName': req.session['surName'],
-							'mail': '',
-							'errors': errors,
-							'logedIn': true,
-
-							/// Shop ///
-							'rows': rows || []
-						});
+						res.render('product', { message: 'Willkommen', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': errors, 'logedIn': true, /* Shop */ 'rows': rows || [] });
 					});
 				}
 				else {
@@ -536,17 +333,7 @@ app.post('/productLogIn', function(req, res){
 					console.log('Wrong PW');
 					console.log('Reload: Shop ' + req.session['start'] + ' - ' + req.session['end']);
 					db.all('SELECT * FROM products', function(err, rows){
-						res.render('product', {
-							message: '',
-							'firstName': '',
-							'surName': '',
-							'mail': mail,
-							'errors': errors,
-							'logedIn': false,
-
-							/// Shop ///
-							'rows': rows || []
-						});
+						res.render('product', { message: '', 'firstName': '', 'surName': '', 'mail': mail, 'errors': errors, 'logedIn': false, /* Shop */ 'rows': rows || [] }); 
 					});
 				}
 			}
@@ -557,26 +344,16 @@ app.post('/productLogOut', function(req, res){
 	// Eine extra LogOut-Methode zum Abmelden von der Produktinformationsseite aus; Damit die Produktseite auch wieder gerendert wird, und nicht die Shop-Seite
 	console.log('LogedOut.');
 	console.log('Reload: product index: ' + req.session['prodId']);
-	//Sessionvariable löschen
-	//delete req.session['authenticated'];
-	//req.session['authenticated'] = false;
-	// Artikelinformationen übermitteln
 	
+	// Artikelinformationen übermitteln
 	const prodId = parseInt(req.session['prodId']);
 	console.log('Reload2: product index: ' + prodId);
 	db.all(`SELECT * FROM products WHERE id = '${prodId}'`, function(err, rows){
-		res.render('product', {
-			message: '',
-			'firstName': '',
-			'surName': '',
-			'mail': '',
-			'errors': '',
-			'logedIn': false,
-
-			/// Product ///
-			'rows': rows || []
-		});
+		res.render('product', { message: '', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': false, /* Product */ 'rows': rows || [] });
 	});
+	// Sessionvariable löschen
+	delete req.session['authenticated'];
+	//req.session['authenticated'] = false;
 });
 
 // Cart
@@ -589,18 +366,7 @@ app.get('/cart', (req, res) =>{
 				sum = Number((parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity)).toFixed(2));
 				//Runden auf 2 Stellen nach dem Komma
 			}
-			res.render('cart', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Cart ///
-				'rows': rows || [],
-				'sum': sum
-			});
+			res.render('cart', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Cart */ 'rows': rows || [], 'sum': sum });
 		});
 	}
 });
@@ -623,41 +389,21 @@ app.post('/cartInsert/:name/:price', function(req, res){
 						console.log(quantity + ' ' + name + '(s) inserted into cart')
 						// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
 						db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-							res.render('product', {
-								message: 'Wurde ihrem Warenkorb hinzugefügt',
-								'firstName': '',
-								'surName': '',
-								'mail': '',
-								'errors': '',
-								'logedIn': true,
-
-								/// Product ///
-								'rows': rows || []
-							});
+							res.render('product', { message: 'Wurde ihrem Warenkorb hinzugefügt', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': true, /* Product */ 'rows': rows || [] });
 						});
 					});
 				}
 				else {
-				// Falls das ausgewählte Produkt schon im Warenkorb ist, wird die Anzahl hochgezählt
-				quantity += parseInt(rowsCheck[0].quantity);
-				db.run(`UPDATE cart SET quantity = '${quantity}' WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err){
-					console.log(quantity + ' ' + name + '(s) updated into cart')
-					// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
-					db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-						res.render('product', {
-							message: 'Wurde ihrem Warenkorb hinzugefügt',
-							'firstName': '',
-							'surName': '',
-							'mail': '',
-							'errors': '',
-							'logedIn': true,
-
-							/// Product ///
-							'rows': rows || []
+					// Falls das ausgewählte Produkt schon im Warenkorb ist, wird die Anzahl hochgezählt
+					quantity += parseInt(rowsCheck[0].quantity);
+					db.run(`UPDATE cart SET quantity = '${quantity}' WHERE mail = '${req.session['mail']}' AND id = '${req.session['prodId']}'`, function(err){
+						console.log(quantity + ' ' + name + '(s) updated into cart')
+						// Produktseite wieder laden mit neuer Message: wurde hinzugefügt
+						db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
+							res.render('product', { message: 'Wurde ihrem Warenkorb hinzugefügt', 'firstName': '', 'surName': '', 'mail': '', 'errors': '', 'logedIn': true, /* Product */ 'rows': rows || [] });
 						});
 					});
-				});
-			}
+				}
 			});
 		}
 		else {
@@ -665,17 +411,7 @@ app.post('/cartInsert/:name/:price', function(req, res){
 			let errors = [];
 			errors[2] = "Nicht genügend Artikel auf Lager";
 			db.all(`SELECT * FROM products WHERE id = '${req.session['prodId']}'`, function(err, rows){
-				res.render('product', {
-					message: '',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': errors,
-					'logedIn': true,
-
-					/// Product ///
-					'rows': rows || []
-				});
+				res.render('product', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': errors, 'logedIn': true, /* Product */ 'rows': rows || [] });
 			});
 		}
 	});
@@ -692,18 +428,7 @@ app.post('/cartDelete/:id', function(req, res){
 			for (var i = 0; i < rows.length; i ++) {
 				sum = parseFloat(sum) + parseFloat(rows[i].price) * parseInt(rows[i].quantity);
 			}
-			res.render('cart', {
-				message: '',
-				'firstName': req.session['firstName'],
-				'surName': req.session['surName'],
-				'mail': '',
-				'errors': '',
-				'logedIn': true,
-
-				/// Cart ///
-				'rows': rows || [],
-				'sum': sum
-			});
+			res.render('cart', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Cart */ 'rows': rows || [], 'sum': sum });
 		});
 	});
 });
@@ -748,17 +473,7 @@ app.post('/buy', function(req, res){
 			}
 			db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
 				console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
-				res.render('confirmation', {
-					message: '',
-					'firstName': req.session['firstName'],
-					'surName': req.session['surName'],
-					'mail': '',
-					'errors': '',
-					'logedIn': true,
-
-					/// Bestellbestätigung ///
-					'rows': rows || [],
-				});
+				res.render('confirmation', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Bestellbestätigung */ 'rows': rows || [] });
 			});
 		});
 	});
@@ -768,17 +483,7 @@ app.post('/buy', function(req, res){
 app.get('/confirmation', function (req, res) {
 	db.all(`SELECT * FROM orders WHERE mail = '${req.session['mail']}'`, function(err, rows){
 		console.log('User: ' + req.session['mail'] + ' / Arraylength: ' + rows.length);
-		res.render('confirmation', {
-			message: '',
-			'firstName': req.session['firstName'],
-			'surName': req.session['surName'],
-			'mail': '',
-			'errors': '',
-			'logedIn': true,
-
-			/// Bestellbestätigung ///
-			'rows': rows || [],
-		});
+		res.render('confirmation', { message: '', 'firstName': req.session['firstName'], 'surName': req.session['surName'], 'mail': '', 'errors': '', 'logedIn': true, /* Bestellbestätigung */ 'rows': rows || [], });
 	});
 });
 
